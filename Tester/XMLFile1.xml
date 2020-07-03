@@ -53,7 +53,7 @@
       <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-06-29T18:20:23.000Z" lastModifiedTime="2020-06-29T18:20:45.000Z" objectID="{BEA33AC1-A1C9-47DD-8A64-29F6D37A719A}{46}{B0}" alignment="left" quickStyleIndex="5" selected="partial">
         <one:T>
           <![CDATA[<span
-style='font-style:italic'>Testing Heading 4</span>]]>
+          style='font-style:italic'>Testing Heading 4</span>]]>
         </one:T>
         <one:T selected="all"><![CDATA[]]></one:T>
       </one:OE>

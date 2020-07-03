@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OneNoteParser.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,16 +10,16 @@ namespace OneNoteParser
 {
     public static class Parser
     {
-        #region Singleton fields
         private static XNamespace ns = null;
         private static Microsoft.Office.Interop.OneNote.Application onenoteApp = new Microsoft.Office.Interop.OneNote.Application();
-        #endregion
 
         #region Constructors
         static Parser()
         {
             GetNamespace();
         }
+
+
 
         private static void GetNamespace()
         {
@@ -33,6 +34,11 @@ namespace OneNoteParser
         public static string GetObjectId(Microsoft.Office.Interop.OneNote.HierarchyScope scope, string objectName)
         {
             return GetObjectId(null, scope, objectName);
+        }
+
+        public static void Close(string notebookId)
+        {
+            onenoteApp.CloseNotebook(notebookId);
         }
 
         public static string GetObjectId(string parentId,
@@ -198,6 +204,10 @@ namespace OneNoteParser
             return source;
         }
 
+        public static string ReplaceMultiline(string source)
+        {
+            return source.Replace("\n", " ");
+        }
 
         public static void LogChildObject(XElement node, int level, List<string> results)
         {
@@ -249,17 +259,81 @@ namespace OneNoteParser
             return xml;
         }
 
+        public static string GetAttibuteValue(XElement element, string attributeName)
+        {
+            var v = element.Attributes().Where(q => q.Name == attributeName).FirstOrDefault();
+            if (v != null)
+                return v.Value;
+            else
+                return null;
+        }
 
-        public static List<string> GenerateMD(string parentId)
+
+        public static Dictionary<string, QuickStyleDef> GetQuickStyleDef(XDocument doc)
+        {
+            var nodeName = "QuickStyleDef";
+
+            var result = new Dictionary<string, QuickStyleDef>();
+            var quickStyleDefs = doc.Descendants(ns + nodeName);
+            if (quickStyleDefs != null)
+            {
+                foreach (var item in quickStyleDefs)
+                {
+                    QuickStyleDef def = new QuickStyleDef();
+                    def.Index = GetAttibuteValue(item, "index");
+                    def.Name = GetAttibuteValue(item, "name");
+                    result.Add(def.Index, def);
+                }
+
+            }
+
+            return result;
+        }
+
+        public static string GetPageTitle(XDocument doc)
+        {
+            var nodeName = "Title";
+
+            var result = "";
+            var element = doc.Descendants(ns + nodeName).FirstOrDefault();
+            if (element != null)
+            {
+                var title = element.Descendants(ns + "OE").FirstOrDefault();
+                if (title != null)
+                    return title.Value.ToString();
+            }
+
+            return result;
+        }
+
+        public static XElement GetTitleElement(XDocument doc)
+        {
+            var nodeName = "Title";
+
+            var element = doc.Descendants(ns + nodeName).FirstOrDefault();
+
+            return element;
+        }
+        public static string GenerateMD(string parentId)
         {
             var scope = Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren;
             string xml;
             onenoteApp.GetHierarchy(parentId, scope, out xml);
 
             var doc = XDocument.Parse(xml);
+
+            StringBuilder results = new StringBuilder();
+
+            var quickStyles = GetQuickStyleDef(doc);
+            var titleElement = GetTitleElement(doc);
+            var context = new MarkdownGeneratorContext();
+
+            GenerateChildObjectMD(titleElement, context, 0, quickStyles, results);
+
+
             var nodeName = "OEChildren";
 
-            List<string> results = new List<string>();
+
             var children = doc.Descendants(ns + nodeName).FirstOrDefault();
             if (children != null && children.HasElements)
             {
@@ -269,41 +343,64 @@ namespace OneNoteParser
                 foreach (var rootElement in rootElements)
                 {
                     int level = 0;
-                    GenerateChildObjectMD(rootElement, level, results);
+                    GenerateChildObjectMD(rootElement, context, level, quickStyles, results);
                 }
+
+                if (context.HasPairedContent())
+                {
+                    results.Append(context.Get().Content);
+                    context.Reset();
+                }
+
             }
 
-            return results;
+            return results.ToString();
         }
 
 
-        public static void GenerateChildObjectMD(XElement node, int level, List<string> results)
+        public static void GenerateChildObjectMD(
+            XElement node, MarkdownGeneratorContext context, long level, Dictionary<string, QuickStyleDef> quickStyleDefs, StringBuilder results)
         {
             if (node != null)
             {
                 string name = NormalizeName(node.Name.ToString());
 
 
-                string content = "";
+                StringBuilder content = new StringBuilder();
                 switch (name)
                 {
+                    case "OE":
+                        {
+                            if (context.HasPairedContent())
+                            {
+                                content.Append(context.Get().Content);
+                                context.Reset();
+                            }
+
+                            var quickStyleIndex = GetAttibuteValue(node, "quickStyleIndex");
+                            if (quickStyleDefs.ContainsKey(quickStyleIndex))
+                            {
+                                var mdContent = quickStyleDefs[quickStyleIndex].GetMD();
+                                if (!mdContent.WillAppendLine())
+                                    content.AppendLine();
+                                context.Set(mdContent);
+                                content.Append(mdContent.Content);
+                            }
+                        }
+                        break;
+
                     case "T":
-                        content = node.Value;
+                        {
+                            string v = ReplaceMultiline(node.Value);
+                            content.Append(v);
+                        }
                         break;
 
                     default:
                         break;
                 }
 
-                var s = "";
-                s = s.PadLeft(level * 3);
-                s += name;
-                if (!String.IsNullOrEmpty(content))
-                {
-                    s += $" [{content}])";
-                }
-
-                results.Add(s);
+                results.Append(content);
 
 
                 if (node.HasElements)
@@ -311,7 +408,7 @@ namespace OneNoteParser
                     var subs = node.Elements().ToList();
                     foreach (var item in subs)
                     {
-                        GenerateChildObjectMD(item, ++level, results);
+                        GenerateChildObjectMD(item, context, ++level, quickStyleDefs, results);
                     }
                 }
             }

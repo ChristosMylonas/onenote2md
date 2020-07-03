@@ -48,6 +48,7 @@
             this.button8 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.mdPreviewBox = new System.Windows.Forms.TextBox();
+            this.button10 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -234,11 +235,22 @@
             this.mdPreviewBox.Size = new System.Drawing.Size(521, 572);
             this.mdPreviewBox.TabIndex = 20;
             // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(323, 9);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(100, 23);
+            this.button10.TabIndex = 21;
+            this.button10.Text = "Get Sections";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1134, 624);
+            this.Controls.Add(this.button10);
             this.Controls.Add(this.mdPreviewBox);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.button8);
@@ -288,6 +300,7 @@
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.TextBox mdPreviewBox;
+        private System.Windows.Forms.Button button10;
     }
 }
 

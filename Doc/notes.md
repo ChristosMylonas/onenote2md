@@ -52,6 +52,9 @@ Notebook
 - We map OneNote content to markdown using the following conventions:
 - Rich text formatting (bold, italic, underline) is retained.
 
+## Page Title
+- Converted to heading 1 (#).
+
 ## Headers
 - OneNote headers (Heading 1 to 6) are mapped to md headers (# to ######).
 

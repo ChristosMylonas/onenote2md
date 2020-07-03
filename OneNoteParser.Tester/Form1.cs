@@ -157,13 +157,21 @@ namespace OneNoteParser.Tester
                 Log("Unknown page");
             else
             {
-                var children = Parser.GenerateMD(pageId);
-                StringBuilder s = new StringBuilder();
-                foreach (var item in children)
-                {
-                    s.AppendLine(item);
-                }
-                mdPreviewBox.AppendText(s.ToString());
+                var md = Parser.GenerateMD(pageId);
+                mdPreviewBox.AppendText(md);
+            }
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            var notebookId = Parser.GetObjectId(
+                Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks, notebookBox.Text);
+
+            if (String.IsNullOrEmpty(notebookId))
+                Log("Unknown notebook");
+            else
+            {
+                Parser.Close(notebookId);
             }
         }
     }

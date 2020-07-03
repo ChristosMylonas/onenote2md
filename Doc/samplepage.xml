@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<one:Page xmlns:one="http://schemas.microsoft.com/office/onenote/2013/onenote" ID="{010D55C1-8224-4A69-8117-794C8A1CCFDD}{1}{E19517372153019610732120118032774507286593411}" name="Other styles" dateTime="2020-06-29T18:22:37.000Z" lastModifiedTime="2020-07-02T17:49:18.000Z" pageLevel="1" selected="partial" lang="en-US">
+  <one:QuickStyleDef index="0" name="PageTitle" fontColor="automatic" highlightColor="automatic" font="Calibri Light" fontSize="20.0" spaceBefore="0.0" spaceAfter="0.0"/>
+  <one:QuickStyleDef index="1" name="p" fontColor="automatic" highlightColor="automatic" font="Calibri" fontSize="11.0" spaceBefore="0.0" spaceAfter="0.0"/>
+  <one:QuickStyleDef index="2" name="blockquote" fontColor="#595959" highlightColor="automatic" font="Calibri" fontSize="11.0" italic="true" spaceBefore="0.0" spaceAfter="0.0"/>
+  <one:QuickStyleDef index="3" name="cite" fontColor="#595959" highlightColor="automatic" font="Calibri" fontSize="9.0" spaceBefore="0.0" spaceAfter="0.0"/>
+  <one:QuickStyleDef index="4" name="code" fontColor="automatic" highlightColor="automatic" font="Consolas" fontSize="11.0" spaceBefore="0.0" spaceAfter="0.0"/>
+  <one:PageSettings RTL="false" color="automatic">
+    <one:PageSize>
+      <one:Automatic/>
+    </one:PageSize>
+    <one:RuleLines visible="false"/>
+  </one:PageSettings>
+  <one:Title lang="en-US">
+    <one:OE author="Christos Milonas" authorInitials="CM" authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedBy="Christos Milonas" lastModifiedByInitials="CM" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-06-29T18:22:47.000Z" lastModifiedTime="2020-06-29T18:22:47.000Z" objectID="{E79054A2-4EFE-492A-8E72-BAA7AA767092}{15}{B0}" alignment="left" quickStyleIndex="0">
+      <one:T><![CDATA[Other styles]]></one:T>
+    </one:OE>
+  </one:Title>
+  <one:Outline selected="partial" author="Christos Milonas" authorInitials="CM" lastModifiedBy="Christos Milonas" lastModifiedByInitials="CM" lastModifiedTime="2020-06-29T18:24:05.000Z" objectID="{E79054A2-4EFE-492A-8E72-BAA7AA767092}{30}{B0}">
+    <one:Position x="36.0" y="86.4000015258789" z="0"/>
+    <one:Size width="181.0638580322266" height="117.8602294921875"/>
+    <one:OEChildren selected="partial">
+      <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-06-29T18:23:15.000Z" lastModifiedTime="2020-06-29T18:23:15.000Z" objectID="{E79054A2-4EFE-492A-8E72-BAA7AA767092}{31}{B0}" alignment="left" quickStyleIndex="1">
+        <one:T><![CDATA[This shows other styles such as:]]></one:T>
+      </one:OE>
+      <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-06-29T18:24:05.000Z" lastModifiedTime="2020-06-29T18:24:05.000Z" objectID="{E79054A2-4EFE-492A-8E72-BAA7AA767092}{50}{B0}" alignment="left" quickStyleIndex="1">
+        <one:T><![CDATA[]]></one:T>
+      </one:OE>
+      <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-06-29T18:23:30.000Z" lastModifiedTime="2020-06-29T18:23:30.000Z" objectID="{E79054A2-4EFE-492A-8E72-BAA7AA767092}{37}{B0}" alignment="left" quickStyleIndex="2" selected="partial">
+        <one:T selected="all">
+          <![CDATA[<span
+style='font-style:italic'>This is a quote.</span>]]>
+        </one:T>
+      </one:OE>
+      <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-06-29T18:23:32.000Z" lastModifiedTime="2020-06-29T18:23:32.000Z" objectID="{E79054A2-4EFE-492A-8E72-BAA7AA767092}{40}{B0}" alignment="left" quickStyleIndex="1">
+        <one:T><![CDATA[]]></one:T>
+      </one:OE>
+      <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-06-29T18:23:33.000Z" lastModifiedTime="2020-06-29T18:23:33.000Z" objectID="{E79054A2-4EFE-492A-8E72-BAA7AA767092}{42}{B0}" alignment="left" quickStyleIndex="1">
+        <one:T><![CDATA[]]></one:T>
+      </one:OE>
+      <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-06-29T18:23:45.000Z" lastModifiedTime="2020-06-29T18:23:45.000Z" objectID="{E79054A2-4EFE-492A-8E72-BAA7AA767092}{35}{B0}" alignment="left" quickStyleIndex="3">
+        <one:T><![CDATA[This is a citation.]]></one:T>
+      </one:OE>
+      <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-06-29T18:23:07.000Z" lastModifiedTime="2020-06-29T18:23:07.000Z" objectID="{E79054A2-4EFE-492A-8E72-BAA7AA767092}{33}{B0}" alignment="left" quickStyleIndex="1">
+        <one:T><![CDATA[]]></one:T>
+      </one:OE>
+      <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-06-29T18:23:53.000Z" lastModifiedTime="2020-06-29T18:23:53.000Z" objectID="{E79054A2-4EFE-492A-8E72-BAA7AA767092}{47}{B0}" alignment="left" quickStyleIndex="1">
+        <one:T><![CDATA[]]></one:T>
+      </one:OE>
+      <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-06-29T18:24:02.000Z" lastModifiedTime="2020-06-29T18:24:02.000Z" objectID="{E79054A2-4EFE-492A-8E72-BAA7AA767092}{45}{B0}" alignment="left" quickStyleIndex="4">
+        <one:T><![CDATA[This is code.]]></one:T>
+      </one:OE>
+    </one:OEChildren>
+  </one:Outline>
+</one:Page>
