@@ -396,6 +396,18 @@ namespace OneNoteParser
                         }
                         break;
 
+                    case "Bullet":
+                        {
+                            content.Append("- ");
+                        }
+                        break;
+
+                    case "Number":
+                        {
+                            content.Append("1. ");
+                        }
+                        break;
+
                     default:
                         break;
                 }
