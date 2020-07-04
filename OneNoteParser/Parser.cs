@@ -290,6 +290,29 @@ namespace OneNoteParser
             return result;
         }
 
+        public static Dictionary<string, TagDef> GetTagDef(XDocument doc)
+        {
+            var nodeName = "TagDef";
+
+            var result = new Dictionary<string, TagDef>();
+            var tagDefs = doc.Descendants(ns + nodeName);
+            if (tagDefs != null)
+            {
+                foreach (var item in tagDefs)
+                {
+                    var def = new TagDef();
+                    def.Index = GetAttibuteValue(item, "index");
+                    def.Name = GetAttibuteValue(item, "name");
+                    def.Symbol = GetAttibuteValue(item, "symbol");
+                    def.Type = GetAttibuteValue(item, "type");
+                    result.Add(def.Index, def);
+                }
+
+            }
+
+            return result;
+        }
+
         public static string GetPageTitle(XDocument doc)
         {
             var nodeName = "Title";
@@ -325,10 +348,13 @@ namespace OneNoteParser
             StringBuilder results = new StringBuilder();
 
             var quickStyles = GetQuickStyleDef(doc);
-            var titleElement = GetTitleElement(doc);
-            var context = new MarkdownGeneratorContext();
+            var tags = GetTagDef(doc);
 
-            GenerateChildObjectMD(titleElement, context, 0, quickStyles, results);
+            var titleElement = GetTitleElement(doc);
+
+            var context = new MarkdownGeneratorContext(quickStyles, tags);
+
+            GenerateChildObjectMD(titleElement, context, 0, results);
 
 
             var nodeName = "OEChildren";
@@ -343,7 +369,7 @@ namespace OneNoteParser
                 foreach (var rootElement in rootElements)
                 {
                     int level = 0;
-                    GenerateChildObjectMD(rootElement, context, level, quickStyles, results);
+                    GenerateChildObjectMD(rootElement, context, level, results);
                 }
 
                 if (context.HasPairedContent())
@@ -358,7 +384,7 @@ namespace OneNoteParser
 
 
         public static void GenerateChildObjectMD(
-            XElement node, MarkdownGeneratorContext context, long level, Dictionary<string, QuickStyleDef> quickStyleDefs, StringBuilder results)
+            XElement node, MarkdownGeneratorContext context, long level, StringBuilder results)
         {
             if (node != null)
             {
@@ -377,9 +403,10 @@ namespace OneNoteParser
                             }
 
                             var quickStyleIndex = GetAttibuteValue(node, "quickStyleIndex");
-                            if (quickStyleDefs.ContainsKey(quickStyleIndex))
+                            var quickStyleDef = context.GetQuickStyleDef(quickStyleIndex);
+                            if (quickStyleDef != null)
                             {
-                                var mdContent = quickStyleDefs[quickStyleIndex].GetMD();
+                                var mdContent = quickStyleDef.GetMD();
                                 if (!mdContent.WillAppendLine())
                                     content.AppendLine();
                                 context.Set(mdContent);
@@ -409,11 +436,26 @@ namespace OneNoteParser
 
                     case "Tag":
                         {
-                            var completed = GetAttibuteValue(node, "completed");
-                            if (completed == "true")
-                                content.Append("- [x] ");
-                            else
-                                content.Append("- [ ] ");
+                            var tagIndex = GetAttibuteValue(node, "index");
+                            var tagDef = context.GetTagDef(tagIndex);
+
+                            if (tagDef != null)
+                            {
+                                if (tagDef.Name.Equals("To Do", StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    var completed = GetAttibuteValue(node, "completed");
+                                    if (completed == "true")
+                                        content.Append("- [x] ");
+                                    else
+                                        content.Append("- [ ] ");
+                                }
+                                else
+                                {
+                                    var tagMdContent = tagDef.GetMD();
+                                    content.Append("- ");
+                                    content.Append(tagMdContent.Content);
+                                }
+                            }
                         }
                         break;
 
@@ -429,7 +471,7 @@ namespace OneNoteParser
                     var subs = node.Elements().ToList();
                     foreach (var item in subs)
                     {
-                        GenerateChildObjectMD(item, context, ++level, quickStyleDefs, results);
+                        GenerateChildObjectMD(item, context, ++level, results);
                     }
                 }
             }

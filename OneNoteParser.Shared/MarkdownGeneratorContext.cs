@@ -8,16 +8,43 @@ namespace OneNoteParser.Shared
 {
     public class MarkdownGeneratorContext
     {
+        Dictionary<string, QuickStyleDef> quickStyleDefs;
+        Dictionary<string, TagDef> tagDefs;
+
         MarkdownContent lastContent;
 
-        public MarkdownGeneratorContext(MarkdownContent content)
+        public MarkdownGeneratorContext(
+            Dictionary<string, QuickStyleDef> quickStyleDefs, Dictionary<string, TagDef> tagDefs,
+            MarkdownContent content)
         {
+            this.quickStyleDefs = quickStyleDefs;
+            this.tagDefs = tagDefs;
             lastContent = content;
         }
 
-        public MarkdownGeneratorContext()
+        public MarkdownGeneratorContext(
+            Dictionary<string, QuickStyleDef> quickStyleDefs, Dictionary<string, TagDef> tagDefs)
         {
+            this.quickStyleDefs = quickStyleDefs;
+            this.tagDefs = tagDefs;
+
             lastContent = null;
+        }
+
+        public QuickStyleDef GetQuickStyleDef(string key)
+        {
+            if (quickStyleDefs.ContainsKey(key))
+                return quickStyleDefs[key];
+            else
+                return null;
+        }
+
+        public TagDef GetTagDef(string key)
+        {
+            if (tagDefs.ContainsKey(key))
+                return tagDefs[key];
+            else
+                return null;
         }
 
         public bool HasContent()

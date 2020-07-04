@@ -41,8 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MarkdownContent.cs" />
     <Compile Include="MarkdownGeneratorContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TagDef.cs" />
     <Compile Include="QuickStyleDef.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
