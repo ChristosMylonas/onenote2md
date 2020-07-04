@@ -351,7 +351,6 @@ namespace OneNoteParser
                     results.Append(context.Get().Content);
                     context.Reset();
                 }
-
             }
 
             return results.ToString();
@@ -405,6 +404,16 @@ namespace OneNoteParser
                     case "Number":
                         {
                             content.Append("1. ");
+                        }
+                        break;
+
+                    case "Tag":
+                        {
+                            var completed = GetAttibuteValue(node, "completed");
+                            if (completed == "true")
+                                content.Append("- [x] ");
+                            else
+                                content.Append("- [ ] ");
                         }
                         break;
 
