@@ -402,15 +402,25 @@ namespace OneNoteParser
                                 context.Reset();
                             }
 
-                            var quickStyleIndex = GetAttibuteValue(node, "quickStyleIndex");
-                            var quickStyleDef = context.GetQuickStyleDef(quickStyleIndex);
-                            if (quickStyleDef != null)
+                            if (context.TableInfo.IsOnTable())
                             {
-                                var mdContent = quickStyleDef.GetMD();
-                                if (!mdContent.WillAppendLine())
-                                    content.AppendLine();
-                                context.Set(mdContent);
-                                content.Append(mdContent.Content);
+
+                            }
+                            else
+                            {
+                                var quickStyleIndex = GetAttibuteValue(node, "quickStyleIndex");
+                                if (!String.IsNullOrEmpty(quickStyleIndex))
+                                {
+                                    var quickStyleDef = context.GetQuickStyleDef(quickStyleIndex);
+                                    if (quickStyleDef != null)
+                                    {
+                                        var mdContent = quickStyleDef.GetMD();
+                                        if (!mdContent.WillAppendLine())
+                                            content.AppendLine();
+                                        context.Set(mdContent);
+                                        content.Append(mdContent.Content);
+                                    }
+                                }
                             }
                         }
                         break;
@@ -456,6 +466,65 @@ namespace OneNoteParser
                                     content.Append(tagMdContent.Content);
                                 }
                             }
+                        }
+                        break;
+
+                    case "Table":
+                        {
+                            if (context.HasPairedContent())
+                            {
+                                content.Append(context.Get().Content);
+                                context.Reset();
+                            }
+
+                            context.TableInfo.SetOnTable();
+                        }
+                        break;
+
+                    case "Column":
+                        {
+                            context.TableInfo.AppendTableColumn();
+                        }
+                        break;
+
+                    case "Row":
+                        {
+                            if (context.TableInfo.IsOnTable())
+                            {
+                                if (context.TableInfo.OnHeaderRow())
+                                {
+                                    content.AppendLine();
+                                    var columns = context.TableInfo.GetTableColumnCount();
+                                    for (int i = 0; i < columns; i++)
+                                    {
+                                        content.Append("| - ");
+                                    }
+                                    content.Append("|");
+                                }
+
+                                content.AppendLine();
+                                context.TableInfo.AppendRow();
+                            }
+                            else
+                            {
+                                // how we get here?
+                            }
+
+                        }
+                        break;
+
+                    case "Cell":
+                        {
+                            if (context.TableInfo.IsOnTable())
+                            {
+                                content.Append(" | ");
+                                //context.Set(new MarkdownContent("|", true));
+                            }
+                            else
+                            {
+                                // how we get here?
+                            }
+
                         }
                         break;
 

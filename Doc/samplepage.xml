@@ -1,9 +1,5 @@
 <?xml version="1.0"?>
-<one:Page xmlns:one="http://schemas.microsoft.com/office/onenote/2013/onenote" ID="{010D55C1-8224-4A69-8117-794C8A1CCFDD}{1}{E19567790262446651802320143068003953456024671}" name="Tags" dateTime="2020-06-29T18:55:20.000Z" lastModifiedTime="2020-06-29T18:56:46.000Z" pageLevel="1" selected="partial" lang="en-US">
-  <one:TagDef index="0" type="0" symbol="3" fontColor="automatic" highlightColor="none" name="To Do"/>
-  <one:TagDef index="1" type="1" symbol="13" fontColor="automatic" highlightColor="none" name="Important"/>
-  <one:TagDef index="2" type="2" symbol="15" fontColor="automatic" highlightColor="none" name="Question"/>
-  <one:TagDef index="3" type="12" symbol="17" fontColor="automatic" highlightColor="none" name="Critical"/>
+<one:Page xmlns:one="http://schemas.microsoft.com/office/onenote/2013/onenote" ID="{010D55C1-8224-4A69-8117-794C8A1CCFDD}{1}{E19504514062028922578820170193680244505473401}" name="Simple Table" dateTime="2020-07-02T17:52:44.000Z" lastModifiedTime="2020-07-02T17:55:20.000Z" pageLevel="1" selected="partial" lang="en-US">
   <one:QuickStyleDef index="0" name="PageTitle" fontColor="automatic" highlightColor="automatic" font="Calibri Light" fontSize="20.0" spaceBefore="0.0" spaceAfter="0.0"/>
   <one:QuickStyleDef index="1" name="p" fontColor="automatic" highlightColor="automatic" font="Calibri" fontSize="11.0" spaceBefore="0.0" spaceAfter="0.0"/>
   <one:PageSettings RTL="false" color="automatic">
@@ -13,29 +9,128 @@
     <one:RuleLines visible="false"/>
   </one:PageSettings>
   <one:Title lang="en-US">
-    <one:OE author="Christos Milonas" authorInitials="CM" authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedBy="Christos Milonas" lastModifiedByInitials="CM" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-06-29T18:55:22.000Z" lastModifiedTime="2020-06-29T18:55:22.000Z" objectID="{7E4FD70C-4575-418F-82EF-150412A01911}{15}{B0}" alignment="left" quickStyleIndex="0">
-      <one:T><![CDATA[Tags]]></one:T>
+    <one:OE author="Christos Milonas" authorInitials="CM" authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedBy="Christos Milonas" lastModifiedByInitials="CM" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-07-02T17:52:49.000Z" lastModifiedTime="2020-07-02T17:52:49.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{15}{B0}" alignment="left" quickStyleIndex="0">
+      <one:T><![CDATA[Simple Table]]></one:T>
     </one:OE>
   </one:Title>
-  <one:Outline selected="partial" author="Christos Milonas" authorInitials="CM" lastModifiedBy="Christos Milonas" lastModifiedByInitials="CM" lastModifiedTime="2020-06-29T18:56:46.000Z" objectID="{7E4FD70C-4575-418F-82EF-150412A01911}{30}{B0}">
+  <one:Outline selected="partial" author="Christos Milonas" authorInitials="CM" lastModifiedBy="Christos Milonas" lastModifiedByInitials="CM" lastModifiedTime="2020-07-04T08:03:05.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{31}{B0}">
     <one:Position x="36.0" y="86.4000015258789" z="0"/>
-    <one:Size width="85.14109039306641" height="53.71086883544922"/>
+    <one:Size width="146.1361541748047" height="104.0262985229492"/>
     <one:OEChildren selected="partial">
-      <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-06-29T18:55:51.000Z" lastModifiedTime="2020-06-29T18:55:51.000Z" objectID="{7E4FD70C-4575-418F-82EF-150412A01911}{31}{B0}" alignment="left" quickStyleIndex="1">
-        <one:Tag index="0" completed="false" disabled="false" creationDate="2020-06-29T18:55:40.000Z"/>
-        <one:T><![CDATA[To do]]></one:T>
+      <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-07-02T17:52:59.000Z" lastModifiedTime="2020-07-02T17:52:59.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{32}{B0}" alignment="left" quickStyleIndex="1">
+        <one:T><![CDATA[This is a simple table.]]></one:T>
       </one:OE>
-      <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-06-29T18:55:54.000Z" lastModifiedTime="2020-06-29T18:56:04.000Z" objectID="{7E4FD70C-4575-418F-82EF-150412A01911}{34}{B0}" alignment="left" quickStyleIndex="1">
-        <one:Tag index="1" completed="true" disabled="false" creationDate="2020-06-29T18:56:01.000Z" completionDate="2020-06-29T18:56:01.000Z"/>
-        <one:T><![CDATA[Important]]></one:T>
+      <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-07-02T17:53:07.000Z" lastModifiedTime="2020-07-02T17:55:18.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{40}{B0}" alignment="left">
+        <one:Table bordersVisible="true" hasHeaderRow="true" lastModifiedTime="2020-07-02T17:55:18.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{41}{B0}">
+          <one:Columns>
+            <one:Column index="0" width="44.34204864501953"/>
+            <one:Column index="1" width="44.34204864501953"/>
+            <one:Column index="2" width="44.34204864501953"/>
+          </one:Columns>
+          <one:Row objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{72}{B0}" lastModifiedTime="2020-07-02T17:55:18.000Z">
+            <one:Cell lastModifiedTime="2020-07-02T17:55:18.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{79}{B0}" lastModifiedByInitials="CM">
+              <one:OEChildren>
+                <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-07-02T17:55:18.000Z" lastModifiedTime="2020-07-02T17:55:18.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{80}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt">
+                  <one:T>
+                    <![CDATA[<span
+style='font-weight:bold'>Header 1</span>]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            <one:Cell lastModifiedTime="2020-07-02T17:55:18.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{76}{B0}" lastModifiedByInitials="CM">
+              <one:OEChildren>
+                <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-07-02T17:55:18.000Z" lastModifiedTime="2020-07-02T17:55:18.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{77}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt">
+                  <one:T>
+                    <![CDATA[<span
+style='font-weight:bold'>Header 2</span>]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            <one:Cell lastModifiedTime="2020-07-02T17:55:18.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{73}{B0}" lastModifiedByInitials="CM">
+              <one:OEChildren>
+                <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-07-02T17:55:18.000Z" lastModifiedTime="2020-07-02T17:55:18.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{74}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt">
+                  <one:T>
+                    <![CDATA[<span
+style='font-weight:bold'>Header 3</span>]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          <one:Row objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{62}{B0}" lastModifiedTime="2020-07-02T17:54:01.000Z">
+            <one:Cell lastModifiedTime="2020-07-02T17:53:37.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{69}{B0}" lastModifiedByInitials="CM">
+              <one:OEChildren>
+                <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-07-02T17:53:37.000Z" lastModifiedTime="2020-07-02T17:53:37.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{70}{B0}" alignment="left" quickStyleIndex="1">
+                  <one:T><![CDATA[1]]></one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            <one:Cell lastModifiedTime="2020-07-02T17:53:49.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{66}{B0}" lastModifiedByInitials="CM">
+              <one:OEChildren>
+                <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-07-02T17:53:49.000Z" lastModifiedTime="2020-07-02T17:53:49.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{67}{B0}" alignment="left" quickStyleIndex="1">
+                  <one:T><![CDATA[One]]></one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            <one:Cell lastModifiedTime="2020-07-02T17:54:01.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{63}{B0}" lang="el" lastModifiedByInitials="CM">
+              <one:OEChildren>
+                <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-07-02T17:54:01.000Z" lastModifiedTime="2020-07-02T17:54:01.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{64}{B0}" alignment="left" quickStyleIndex="1">
+                  <one:T><![CDATA[Ένα]]></one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          <one:Row objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{52}{B0}" lastModifiedTime="2020-07-02T17:54:04.000Z">
+            <one:Cell lastModifiedTime="2020-07-02T17:53:38.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{59}{B0}" lastModifiedByInitials="CM">
+              <one:OEChildren>
+                <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-07-02T17:53:38.000Z" lastModifiedTime="2020-07-02T17:53:38.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{60}{B0}" alignment="left" quickStyleIndex="1">
+                  <one:T><![CDATA[2]]></one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            <one:Cell lastModifiedTime="2020-07-02T17:53:43.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{56}{B0}" lastModifiedByInitials="CM">
+              <one:OEChildren>
+                <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-07-02T17:53:43.000Z" lastModifiedTime="2020-07-02T17:53:43.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{57}{B0}" alignment="left" quickStyleIndex="1">
+                  <one:T><![CDATA[Two]]></one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            <one:Cell lastModifiedTime="2020-07-02T17:54:04.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{53}{B0}" lang="el" lastModifiedByInitials="CM">
+              <one:OEChildren>
+                <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-07-02T17:54:03.000Z" lastModifiedTime="2020-07-02T17:54:04.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{54}{B0}" alignment="left" quickStyleIndex="1">
+                  <one:T><![CDATA[Δύο]]></one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          <one:Row objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{42}{B0}" lastModifiedTime="2020-07-02T17:54:13.000Z">
+            <one:Cell lastModifiedTime="2020-07-02T17:53:38.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{49}{B0}" lastModifiedByInitials="CM">
+              <one:OEChildren>
+                <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-07-02T17:53:38.000Z" lastModifiedTime="2020-07-02T17:53:38.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{50}{B0}" alignment="left" quickStyleIndex="1">
+                  <one:T><![CDATA[3]]></one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            <one:Cell lastModifiedTime="2020-07-02T17:53:45.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{46}{B0}" lastModifiedByInitials="CM">
+              <one:OEChildren>
+                <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-07-02T17:53:45.000Z" lastModifiedTime="2020-07-02T17:53:45.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{47}{B0}" alignment="left" quickStyleIndex="1">
+                  <one:T><![CDATA[Three]]></one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            <one:Cell lastModifiedTime="2020-07-02T17:54:13.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{43}{B0}" lang="el" lastModifiedByInitials="CM">
+              <one:OEChildren>
+                <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-07-02T17:54:05.000Z" lastModifiedTime="2020-07-02T17:54:13.000Z" objectID="{78CDAF48-A5A2-424A-A8CE-EC10C2D0758F}{44}{B0}" alignment="left" quickStyleIndex="1">
+                  <one:T><![CDATA[Τρία]]></one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+        </one:Table>
       </one:OE>
-      <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-06-29T18:56:10.000Z" lastModifiedTime="2020-06-29T18:56:13.000Z" objectID="{7E4FD70C-4575-418F-82EF-150412A01911}{38}{B0}" alignment="left" quickStyleIndex="1">
-        <one:Tag index="2" completed="true" disabled="false" creationDate="2020-06-29T18:56:13.000Z" completionDate="2020-06-29T18:56:13.000Z"/>
-        <one:T><![CDATA[Question]]></one:T>
-      </one:OE>
-      <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-06-29T18:56:42.000Z" lastModifiedTime="2020-06-29T18:56:46.000Z" objectID="{7E4FD70C-4575-418F-82EF-150412A01911}{41}{B0}" alignment="left" quickStyleIndex="1" selected="partial">
-        <one:Tag index="3" completed="true" disabled="false" creationDate="2020-06-29T18:56:46.000Z" completionDate="2020-06-29T18:56:46.000Z"/>
-        <one:T><![CDATA[Critical]]></one:T>
+      <one:OE authorResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;k3QXqA9T1G8dtDhqmBYlFA==&quot;&gt;&lt;localId sid=&quot;S-1-5-21-2753541648-2355112122-2581322307-15927&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2020-07-04T08:03:05.000Z" lastModifiedTime="2020-07-04T08:03:05.000Z" objectID="{ADA09CBE-1471-49FA-82F1-22555204ED92}{10}{B0}" alignment="left" quickStyleIndex="1" selected="partial">
         <one:T selected="all"><![CDATA[]]></one:T>
       </one:OE>
     </one:OEChildren>
