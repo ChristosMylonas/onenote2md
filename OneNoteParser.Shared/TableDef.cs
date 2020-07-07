@@ -6,21 +6,21 @@ using System.Threading.Tasks;
 
 namespace OneNoteParser.Shared
 {
-    public class ColumnInfo
+    public class ColumnDef
     {
     }
 
-    public class TableInfo
+    public class TableDef
     {
         bool onTable;
         int rowCount;
 
-        List<ColumnInfo> columnInfoList;
+        List<ColumnDef> columnInfoList;
 
-        public TableInfo()
+        public TableDef()
         {
             onTable = false;
-            columnInfoList = new List<ColumnInfo>();
+            columnInfoList = new List<ColumnDef>();
             rowCount = 0;
         }
 
@@ -58,7 +58,7 @@ namespace OneNoteParser.Shared
 
         public void AppendTableColumn()
         {
-            columnInfoList.Add(new ColumnInfo());
+            columnInfoList.Add(new ColumnDef());
         }
 
         public int GetTableColumnCount()

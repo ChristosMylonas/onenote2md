@@ -1,6 +1,7 @@
 ﻿using OneNoteParser.Shared;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -204,7 +205,7 @@ namespace OneNoteParser
             return source;
         }
 
-        
+
 
         public static string TextReplacement(string source)
         {
@@ -288,6 +289,7 @@ namespace OneNoteParser
         {
             string xml;
             onenoteApp.GetPageContent(pageId, out xml, Microsoft.Office.Interop.OneNote.PageInfo.piAll);
+
             var doc = XDocument.Parse(xml);
             return xml;
         }
@@ -299,6 +301,12 @@ namespace OneNoteParser
                 return v.Value;
             else
                 return null;
+        }
+
+
+        public static string GetElementValue(XElement element)
+        {
+            return element.Value;
         }
 
 
@@ -385,7 +393,7 @@ namespace OneNoteParser
 
             var titleElement = GetTitleElement(doc);
 
-            var context = new MarkdownGeneratorContext(quickStyles, tags);
+            var context = new MarkdownGeneratorContext(parentId, quickStyles, tags);
 
             GenerateChildObjectMD(titleElement, context, 0, results);
 
@@ -461,7 +469,7 @@ namespace OneNoteParser
                     case "T":
                         {
                             string v = ReplaceMultiline(node.Value);
-                            
+
                             v = ConvertSpanToMd(v);
                             v = TextReplacement(v);
                             content.Append(v);
@@ -563,6 +571,70 @@ namespace OneNoteParser
 
                         }
                         break;
+
+                    case "Image":
+                        {
+                            var format = GetAttibuteValue(node, "format");
+                            if (String.IsNullOrEmpty(format))
+                                format = "png";
+                            context.ImageDef.SetWithinImage(format);
+                        }
+                        break;
+
+                    case "Size":
+                        {
+                            var width = GetAttibuteValue(node, "width");
+                            var height = GetAttibuteValue(node, "height");
+
+
+                            var w = Convert.ToDecimal(width);
+                            var h = Convert.ToDecimal(height);
+
+                            context.ImageDef.SetDimensions(w, h);
+                            
+                        }
+                        break;
+
+                    case "CallbackID":
+                        {
+                            var id = GetAttibuteValue(node, "callbackID");
+
+                            string stringValue;
+                            onenoteApp.GetBinaryPageContent(context.ParentId, id, out stringValue);
+
+                            var path = @"C:\Storage\Repositories\OneGitNote\OneNoteParser.Tester\bin\Debug\img";
+                            var filename = context.ImageDef.GetFilename("test");
+                            var fullPath = Path.Combine(path, filename);
+
+                            var bytes = Convert.FromBase64String(stringValue);
+                            using (var imageFile = new FileStream(fullPath, FileMode.Create))
+                            {
+                                imageFile.Write(bytes, 0, bytes.Length);
+                                imageFile.Flush();
+                            }
+
+                            var altText = filename.ToUpper();
+                            var contentFullPath = $"file://{fullPath}";
+                            contentFullPath = contentFullPath.Replace(@"\", @"/");
+                            
+                            var image = $"![{altText}]({contentFullPath})";
+                            //Lwn![test_2.](file://c:/Storage/Repositories/OneGitNote/Tester/aa/test_2.png)
+
+                            content.Append(image);
+                            context.ImageDef.Reset();
+
+
+                        }
+                        break;
+
+                    case "OCRData":
+                        {
+
+                        }
+                        break;
+
+
+
 
                     default:
                         break;

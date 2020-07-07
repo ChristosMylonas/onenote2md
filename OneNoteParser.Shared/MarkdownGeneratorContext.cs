@@ -10,29 +10,38 @@ namespace OneNoteParser.Shared
     {
         Dictionary<string, QuickStyleDef> quickStyleDefs;
         Dictionary<string, TagDef> tagDefs;
-        TableInfo tableInfo;
-
-        MarkdownContent lastContent;
+        TableDef tableInfo;
+        ImageDef imageDef;
         
 
+        MarkdownContent lastContent;
+
+        public string ParentId { get; private set; }
+
         public MarkdownGeneratorContext(
+            string parentId,
             Dictionary<string, QuickStyleDef> quickStyleDefs, Dictionary<string, TagDef> tagDefs,
             MarkdownContent content)
         {
+            this.ParentId = parentId;
             this.quickStyleDefs = quickStyleDefs;
             this.tagDefs = tagDefs;
             lastContent = content;
-            tableInfo = new TableInfo();
+            tableInfo = new TableDef();
+            imageDef = new ImageDef();
         }
 
         public MarkdownGeneratorContext(
+            string parentId,
             Dictionary<string, QuickStyleDef> quickStyleDefs, Dictionary<string, TagDef> tagDefs)
         {
+            this.ParentId = parentId;
             this.quickStyleDefs = quickStyleDefs;
             this.tagDefs = tagDefs;
 
             lastContent = null;
-            tableInfo = new TableInfo();
+            tableInfo = new TableDef();
+            imageDef = new ImageDef();
         }
 
         public QuickStyleDef GetQuickStyleDef(string key)
@@ -82,6 +91,8 @@ namespace OneNoteParser.Shared
             return lastContent;
         }
 
-        public TableInfo TableInfo { get { return tableInfo; } }
+        public TableDef TableInfo { get { return tableInfo; } }
+
+        public ImageDef ImageDef { get { return imageDef; } }
     }
 }
