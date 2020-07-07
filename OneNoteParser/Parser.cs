@@ -204,10 +204,43 @@ namespace OneNoteParser
             return source;
         }
 
+        
+
+        public static string TextReplacement(string source)
+        {
+            return source.Replace("&nbsp;**", "**");
+        }
+
         public static string ReplaceMultiline(string source)
         {
             return source.Replace("\n", " ");
         }
+
+        static Dictionary<string, string> spanReplacements = new Dictionary<string, string>()
+        {
+            { "<span style='font-weight:bold'>", " **" },
+            { "<span style='font-weight:bold;text-decoration:underline'>", " **" }
+        };
+
+        private static string ConvertSpanToMd(string source)
+        {
+            foreach (var item in spanReplacements)
+            {
+                if (source.Contains(item.Key))
+                {
+                    source = source.Replace(item.Key, item.Value);
+                    source = source.Replace("** ", "**");
+                    source = source.Replace("</span>&nbsp;", item.Value.Trim());
+                    source = source.Replace("</span>", item.Value.Trim());
+                    //source = source.Replace("&nbsp;>", " ");
+                    break;
+                }
+            }
+
+            return source;
+
+        }
+
 
         public static void LogChildObject(XElement node, int level, List<string> results)
         {
@@ -428,6 +461,9 @@ namespace OneNoteParser
                     case "T":
                         {
                             string v = ReplaceMultiline(node.Value);
+                            
+                            v = ConvertSpanToMd(v);
+                            v = TextReplacement(v);
                             content.Append(v);
                         }
                         break;
@@ -545,9 +581,6 @@ namespace OneNoteParser
                 }
             }
         }
-
-
-
 
     }
 }

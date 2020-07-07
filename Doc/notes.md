@@ -70,7 +70,7 @@ Notebook
 ## Rich text
 - Italics is converted to *italics*.
 - Bold is converted to **bold**.
-- Underline is converted to ``TBD``.
+- Underline is converted to **bold**.
 - Strikethrough is converted to ~~strikethrough~~.
 
 
@@ -99,13 +99,17 @@ Notebook
 - ![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
 
 ## Tables
-- Tables are supported through GFM such:
+- Tables are supported through GFM.
+- Tables can contain rich text.
+- Lists within tables are not supported.
+- Sample table :
  
 | Tables | Are| Cool |
 | - | :-: | -: |
 | col 3 is      | right-aligned | $1600 |
 | col 2 is      | centered      |   $12 |
 | zebra stripes | are neat      | aaaa |
+
 
 
 

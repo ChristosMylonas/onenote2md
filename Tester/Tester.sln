@@ -17,7 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\Doc\notes.md = ..\Doc\notes.md
 		..\Doc\other styles.md = ..\Doc\other styles.md
 		rich content.md = rich content.md
+		rich table.md = rich table.md
 		..\Doc\samplepage.xml = ..\Doc\samplepage.xml
+		simple table.md = simple table.md
 		tags.md = tags.md
 		task list.md = task list.md
 	EndProjectSection
