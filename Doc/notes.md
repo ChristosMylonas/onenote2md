@@ -94,9 +94,12 @@ Notebook
 
 
 ## Images
-- Images are converted to png/jpg and linked to md file as
+- Images are converted to png/jpg and linked as local image files.
+- Every image is stored in the same folder as its page.
+- Sample images:
 - Inline-style: 
 - ![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+
 
 ## Tables
 - Tables are supported through GFM.
