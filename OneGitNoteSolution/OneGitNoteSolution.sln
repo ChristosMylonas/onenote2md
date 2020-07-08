@@ -11,8 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneNoteParser.Tester", "..\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{77420144-4D42-4ABD-8CA1-61BCEE733907}"
 	ProjectSection(SolutionItems) = preProject
-		..\Doc\notes.md = ..\Doc\notes.md
 		..\Doc\Objects.docx = ..\Doc\Objects.docx
+		..\README.md = ..\README.md
 		..\Doc\samplepage.xml = ..\Doc\samplepage.xml
 	EndProjectSection
 EndProject

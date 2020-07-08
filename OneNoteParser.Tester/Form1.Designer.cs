@@ -49,6 +49,11 @@
             this.button9 = new System.Windows.Forms.Button();
             this.mdPreviewBox = new System.Windows.Forms.TextBox();
             this.button10 = new System.Windows.Forms.Button();
+            this.button11 = new System.Windows.Forms.Button();
+            this.button12 = new System.Windows.Forms.Button();
+            this.button13 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
@@ -110,12 +115,12 @@
             this.logList.FormattingEnabled = true;
             this.logList.Location = new System.Drawing.Point(12, 280);
             this.logList.Name = "logList";
-            this.logList.Size = new System.Drawing.Size(545, 329);
+            this.logList.Size = new System.Drawing.Size(671, 329);
             this.logList.TabIndex = 6;
             // 
             // clearButton
             // 
-            this.clearButton.Location = new System.Drawing.Point(482, 251);
+            this.clearButton.Location = new System.Drawing.Point(608, 251);
             this.clearButton.Name = "clearButton";
             this.clearButton.Size = new System.Drawing.Size(75, 23);
             this.clearButton.TabIndex = 7;
@@ -152,7 +157,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(359, 251);
+            this.button4.Location = new System.Drawing.Point(527, 251);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
             this.button4.TabIndex = 11;
@@ -163,7 +168,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(11, 170);
+            this.label4.Location = new System.Drawing.Point(12, 138);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(49, 13);
             this.label4.TabIndex = 12;
@@ -171,7 +176,7 @@
             // 
             // objectBox
             // 
-            this.objectBox.Location = new System.Drawing.Point(102, 170);
+            this.objectBox.Location = new System.Drawing.Point(102, 135);
             this.objectBox.Name = "objectBox";
             this.objectBox.Size = new System.Drawing.Size(100, 20);
             this.objectBox.TabIndex = 13;
@@ -179,7 +184,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(217, 170);
+            this.button5.Location = new System.Drawing.Point(217, 132);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(100, 23);
             this.button5.TabIndex = 14;
@@ -209,7 +214,7 @@
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(1047, 10);
+            this.button8.Location = new System.Drawing.Point(1146, 9);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(75, 23);
             this.button8.TabIndex = 18;
@@ -219,20 +224,20 @@
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(323, 97);
+            this.button9.Location = new System.Drawing.Point(429, 97);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(100, 23);
             this.button9.TabIndex = 19;
-            this.button9.Text = "GenerateMd";
+            this.button9.Text = "Preview MD";
             this.button9.UseVisualStyleBackColor = true;
             this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // mdPreviewBox
             // 
-            this.mdPreviewBox.Location = new System.Drawing.Point(601, 37);
+            this.mdPreviewBox.Location = new System.Drawing.Point(689, 37);
             this.mdPreviewBox.Multiline = true;
             this.mdPreviewBox.Name = "mdPreviewBox";
-            this.mdPreviewBox.Size = new System.Drawing.Size(521, 572);
+            this.mdPreviewBox.Size = new System.Drawing.Size(532, 572);
             this.mdPreviewBox.TabIndex = 20;
             // 
             // button10
@@ -241,15 +246,64 @@
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(100, 23);
             this.button10.TabIndex = 21;
-            this.button10.Text = "Get Sections";
+            this.button10.Text = "Close";
             this.button10.UseVisualStyleBackColor = true;
             this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(570, 9);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(100, 23);
+            this.button11.TabIndex = 22;
+            this.button11.Text = "GenerateMd";
+            this.button11.UseVisualStyleBackColor = true;
+            // 
+            // button12
+            // 
+            this.button12.Location = new System.Drawing.Point(570, 39);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(100, 23);
+            this.button12.TabIndex = 23;
+            this.button12.Text = "GenerateMd";
+            this.button12.UseVisualStyleBackColor = true;
+            // 
+            // button13
+            // 
+            this.button13.Location = new System.Drawing.Point(570, 67);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(100, 23);
+            this.button13.TabIndex = 24;
+            this.button13.Text = "GenerateMd";
+            this.button13.UseVisualStyleBackColor = true;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(102, 170);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(258, 20);
+            this.textBox1.TabIndex = 25;
+            this.textBox1.Text = "C:\\Storage\\Repositories\\OneGitNote\\Output";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(12, 177);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(72, 13);
+            this.label5.TabIndex = 26;
+            this.label5.Text = "Out Directory:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1134, 624);
+            this.ClientSize = new System.Drawing.Size(1233, 624);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.button13);
+            this.Controls.Add(this.button12);
+            this.Controls.Add(this.button11);
             this.Controls.Add(this.button10);
             this.Controls.Add(this.mdPreviewBox);
             this.Controls.Add(this.button9);
@@ -272,7 +326,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button1);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "OneNoteParser.Tester";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -301,6 +355,11 @@
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.TextBox mdPreviewBox;
         private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Button button11;
+        private System.Windows.Forms.Button button12;
+        private System.Windows.Forms.Button button13;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label5;
     }
 }
 
