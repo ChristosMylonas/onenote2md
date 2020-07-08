@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace OneNoteParser.Tester
+namespace Onenote2md.Core.Tester
 {
     static class Program
     {

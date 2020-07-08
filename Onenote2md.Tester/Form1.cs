@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace OneNoteParser.Tester
+namespace Onenote2md.Core.Tester
 {
     public partial class Form1 : Form
     {

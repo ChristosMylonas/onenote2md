@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace OneNoteParser
+namespace Onenote2md.Core
 {
     public class NotebookParser
     {

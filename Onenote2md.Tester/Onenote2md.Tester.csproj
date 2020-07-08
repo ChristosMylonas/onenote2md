@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{8D59075C-590C-4339-83CA-40A15C69EB8B}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>OneNoteParser.Tester</RootNamespace>
-    <AssemblyName>OneNoteParser.Tester</AssemblyName>
+    <RootNamespace>Onenote2md.Tester</RootNamespace>
+    <AssemblyName>Onenote2md.Tester</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.Microsoft.Office.Interop.OneNote, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\OneGitNoteSolution\packages\Interop.Microsoft.Office.Interop.OneNote.1.1.0.0\lib\net40\Interop.Microsoft.Office.Interop.OneNote.dll</HintPath>
+      <HintPath>..\Onenote2md.Solution\packages\Interop.Microsoft.Office.Interop.OneNote.1.1.0.0\lib\net40\Interop.Microsoft.Office.Interop.OneNote.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
@@ -69,6 +69,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -85,9 +86,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OneNoteParser\OneNoteParser.csproj">
+    <ProjectReference Include="..\Onenote2md.Core\Onenote2md.Core.csproj">
       <Project>{5b6ba0da-3c84-4e2b-a8e4-89eaff50e2f8}</Project>
-      <Name>OneNoteParser</Name>
+      <Name>Onenote2md.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Onenote2md.Shared\Onenote2md.Shared.csproj">
+      <Project>{26b757e0-4879-4d55-a079-3ab0470f12f3}</Project>
+      <Name>Onenote2md.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

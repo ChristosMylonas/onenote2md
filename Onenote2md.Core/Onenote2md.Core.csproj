@@ -7,8 +7,8 @@
     <ProjectGuid>{5B6BA0DA-3C84-4E2B-A8E4-89EAFF50E2F8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OneNoteParser</RootNamespace>
-    <AssemblyName>OneNoteParser</AssemblyName>
+    <RootNamespace>Onenote2md.Core</RootNamespace>
+    <AssemblyName>Onenote2md.Core</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -32,8 +32,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.Microsoft.Office.Interop.OneNote, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\OneGitNoteSolution\packages\Interop.Microsoft.Office.Interop.OneNote.1.1.0.0\lib\net40\Interop.Microsoft.Office.Interop.OneNote.dll</HintPath>
+      <HintPath>..\Onenote2md.Solution\packages\Interop.Microsoft.Office.Interop.OneNote.1.1.0.0\lib\net40\Interop.Microsoft.Office.Interop.OneNote.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -51,9 +52,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OneNoteParser.Shared\OneNoteParser.Shared.csproj">
+    <ProjectReference Include="..\Onenote2md.Shared\Onenote2md.Shared.csproj">
       <Project>{26B757E0-4879-4D55-A079-3AB0470F12F3}</Project>
-      <Name>OneNoteParser.Shared</Name>
+      <Name>Onenote2md.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

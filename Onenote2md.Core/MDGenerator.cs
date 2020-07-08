@@ -1,4 +1,4 @@
-﻿using OneNoteParser.Shared;
+﻿using Onenote2md.Shared;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace OneNoteParser
+namespace Onenote2md.Core
 {
     public class MDGenerator : IGenerator
     {

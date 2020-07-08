@@ -1,4 +1,4 @@
-﻿namespace OneNoteParser.Tester
+﻿namespace Onenote2md.Core.Tester
 {
     partial class Form1
     {

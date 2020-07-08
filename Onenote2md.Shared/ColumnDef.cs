@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OneNoteParser.Shared
+namespace Onenote2md.Shared
 {
     public class ColumnDef
     {

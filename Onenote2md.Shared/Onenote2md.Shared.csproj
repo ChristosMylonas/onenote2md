@@ -7,8 +7,8 @@
     <ProjectGuid>{26B757E0-4879-4D55-A079-3AB0470F12F3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OneNoteParser.Shared</RootNamespace>
-    <AssemblyName>OneNoteParser.Shared</AssemblyName>
+    <RootNamespace>Onenote2md.Shared</RootNamespace>
+    <AssemblyName>Onenote2md.Shared</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
