@@ -1,13 +1,14 @@
 ﻿# onenote2md
-An automated tool to convert OneNote files to Markdown files. :+1:
+An automated tool to convert OneNote 2016 notebooks to markdown files. :+1:
 
 # Features
-- Convert Notebooks/Sections/Pages to folders and md files.
+- Convert OneNote 2016 Notebooks/Sections/Section Groups/Pages to folders and md files.
 - Retains rich text formatting.
 - Handles lists.
-- Converts OneNote tables to md tables.
+- Converts OneNote tables to md tables (GFM).
 - Maps images to files and provide links to md files.
-
+- Converts tags/todo lists.
+- Converts code blocks/citations/quotes.
 
 # OneNote object model
 - OneNote uses a simple object model of nested hierarchical objects.
@@ -42,8 +43,8 @@ Table:
 ## OneNote object model synopsis:
 ```
 Notebook
-	Section
-		Page
+    Section
+        Page
             OEChildren
 ```
 
@@ -56,7 +57,7 @@ Notebook
 - Converted to heading 1 (#).
 
 ## Headers
-- OneNote headers (Heading 1 to 6) are mapped to md headers (# to ######).
+- OneNote headers (heading 1 to 6) are mapped to md headers (# to ######).
 
 ## Quotes and Citations
 - Quotes and Citations a converted to *italics*.
@@ -146,3 +147,4 @@ alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 - https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
 - https://guides.github.com/pdfs/markdown-cheatsheet-online.pdf
 - https://www.markdownguide.org/cheat-sheet/
+- https://stackedit.io/app#

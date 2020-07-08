@@ -39,7 +39,6 @@ namespace OneNoteParser.Shared
                         return MarkdownContent.SingleContent(":red_circle: ");
                 }
             }
-
         }
     }
 }

@@ -9,20 +9,24 @@ using System.Xml.Linq;
 
 namespace OneNoteParser
 {
-    [Obsolete]
-    public static class Parser
+    public class MDGenerator : IGenerator
     {
-        private static XNamespace ns = null;
-        private static Microsoft.Office.Interop.OneNote.Application onenoteApp = new Microsoft.Office.Interop.OneNote.Application();
+        #region Fields
+        private XNamespace ns;
+        private Microsoft.Office.Interop.OneNote.Application onenoteApp; 
+
+        static Dictionary<string, string> spanReplacements = new Dictionary<string, string>()
+        {
+            { "<span style='font-weight:bold'>", " **" },
+            { "<span style='font-weight:bold;text-decoration:underline'>", " **" }
+        };
+        #endregion
 
         #region Constructors
-        static Parser()
+        public MDGenerator(Microsoft.Office.Interop.OneNote.Application onenoteApp)
         {
-            GetNamespace();
-        }
+            this.onenoteApp = onenoteApp;
 
-        private static void GetNamespace()
-        {
             string xml;
             onenoteApp.GetHierarchy(null, Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks, out xml);
 
@@ -31,168 +35,8 @@ namespace OneNoteParser
         }
         #endregion
 
-        public static string GetObjectId(Microsoft.Office.Interop.OneNote.HierarchyScope scope, string objectName)
-        {
-            return GetObjectId(null, scope, objectName);
-        }
-
-        public static void Close(string notebookId)
-        {
-            onenoteApp.CloseNotebook(notebookId);
-        }
-
-        public static string GetObjectId(string parentId,
-            Microsoft.Office.Interop.OneNote.HierarchyScope scope, string objectName)
-        {
-            string xml;
-            onenoteApp.GetHierarchy(parentId, scope, out xml);
-
-            var doc = XDocument.Parse(xml);
-            var nodeName = "";
-
-            switch (scope)
-            {
-                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks):
-                    nodeName = "Notebook";
-                    break;
-
-                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages):
-                    nodeName = "Page";
-                    break;
-
-                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections):
-                    nodeName = "Section";
-                    break;
-
-                default:
-                    return null;
-            }
-
-            var node = doc.Descendants(ns + nodeName).Where(n => n.Attribute("name").Value == objectName).FirstOrDefault();
-
-            if (node == null)
-                return null;
-            else
-                return node.Attribute("ID").Value;
-        }
-
-        public static List<string> GetChildObjectNames(string parentId,
-            Microsoft.Office.Interop.OneNote.HierarchyScope scope)
-        {
-            string xml;
-            onenoteApp.GetHierarchy(parentId, scope, out xml);
-
-            var doc = XDocument.Parse(xml);
-            var nodeName = "";
-
-            switch (scope)
-            {
-                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks):
-                    nodeName = "Notebook";
-                    break;
-
-                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages):
-                    nodeName = "Page";
-                    break;
-
-                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections):
-                    nodeName = "Section";
-                    break;
-
-                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren):
-                    nodeName = "OEChildren";
-                    break;
-
-
-                default:
-                    return null;
-            }
-
-            var names = doc.Descendants(ns + nodeName)
-                .Select(n => n.Attribute("name").Value)
-                .ToList();
-
-            return names;
-        }
-
-        public static List<string> GetChildObjectIDs(string parentId)
-        {
-            var scope = Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren;
-            string xml;
-            onenoteApp.GetHierarchy(parentId, scope, out xml);
-
-            var doc = XDocument.Parse(xml);
-            var nodeName = "OEChildren";
-
-            List<string> result = new List<string>();
-            var children = doc.Descendants(ns + nodeName).FirstOrDefault();
-            if (children != null)
-            {
-                var names = children
-                    .Descendants()
-                    .Where(q => q.Attribute("objectID") != null)
-                    .Select(q => q.Attribute("objectID").Value)
-                    .ToList();
-                result.AddRange(names);
-            }
-
-            return result;
-        }
-
-        public static string GetChildObjectID(string parentId, string objectID)
-        {
-            var scope = Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren;
-            string xml;
-            onenoteApp.GetHierarchy(parentId, scope, out xml);
-
-            var doc = XDocument.Parse(xml);
-            var nodeName = "OEChildren";
-
-            var children = doc.Descendants(ns + nodeName).FirstOrDefault();
-            if (children != null)
-            {
-                var item = children
-                    .Descendants()
-                    .Where(q => q.Attribute("objectID") != null)
-                    .Where(q => q.Attribute("objectID").Value == objectID)
-                    .FirstOrDefault();
-                if (item != null)
-                    return item.Value;
-            }
-
-            return null;
-        }
-
-
-        public static List<string> LogChildObjects(string parentId)
-        {
-            var scope = Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren;
-            string xml;
-            onenoteApp.GetHierarchy(parentId, scope, out xml);
-
-            var doc = XDocument.Parse(xml);
-            var nodeName = "OEChildren";
-
-            List<string> results = new List<string>();
-            var children = doc.Descendants(ns + nodeName).FirstOrDefault();
-            if (children != null && children.HasElements)
-            {
-                var rootElements = children
-                    .Elements()
-                    //.Where(q => q.Attribute("objectID") != null)
-                    //.Select(q => q.Attribute("objectID").Value)
-                    .ToList();
-                foreach (var rootElement in rootElements)
-                {
-                    int level = 0;
-                    LogChildObject(rootElement, level, results);
-                }
-            }
-
-            return results;
-        }
-
-        public static string NormalizeName(string source)
+        #region Helpers
+        protected string NormalizeName(string source)
         {
             string ns = "{http://schemas.microsoft.com/office/onenote/2013/onenote}";
             if (String.IsNullOrWhiteSpace(source))
@@ -204,25 +48,17 @@ namespace OneNoteParser
             return source;
         }
 
-
-
-        public static string TextReplacement(string source)
+        protected string TextReplacement(string source)
         {
             return source.Replace("&nbsp;**", "**");
         }
 
-        public static string ReplaceMultiline(string source)
+        protected string ReplaceMultiline(string source)
         {
             return source.Replace("\n", " ");
         }
 
-        static Dictionary<string, string> spanReplacements = new Dictionary<string, string>()
-        {
-            { "<span style='font-weight:bold'>", " **" },
-            { "<span style='font-weight:bold;text-decoration:underline'>", " **" }
-        };
-
-        private static string ConvertSpanToMd(string source)
+        protected string ConvertSpanToMd(string source)
         {
             foreach (var item in spanReplacements)
             {
@@ -238,62 +74,9 @@ namespace OneNoteParser
             }
 
             return source;
-
         }
 
-
-        public static void LogChildObject(XElement node, int level, List<string> results)
-        {
-            if (node != null)
-            {
-                string name = NormalizeName(node.Name.ToString());
-
-
-                string content = "";
-                switch (name)
-                {
-                    case "T":
-                        content = node.Value;
-                        break;
-
-                    default:
-                        break;
-                }
-
-                var s = "";
-                s = s.PadLeft(level * 3);
-                s += name;
-                if (!String.IsNullOrEmpty(content))
-                {
-                    s += $" [{content}])";
-                }
-
-                results.Add(s);
-
-
-                if (node.HasElements)
-                {
-                    var subs = node.Elements().ToList();
-                    foreach (var item in subs)
-                    {
-                        LogChildObject(item, ++level, results);
-                    }
-                }
-            }
-        }
-
-
-
-        public static string GetPageContent(string sectionId, string pageId)
-        {
-            string xml;
-            onenoteApp.GetPageContent(pageId, out xml, Microsoft.Office.Interop.OneNote.PageInfo.piAll);
-
-            var doc = XDocument.Parse(xml);
-            return xml;
-        }
-
-        public static string GetAttibuteValue(XElement element, string attributeName)
+        protected string GetAttibuteValue(XElement element, string attributeName)
         {
             var v = element.Attributes().Where(q => q.Name == attributeName).FirstOrDefault();
             if (v != null)
@@ -302,82 +85,14 @@ namespace OneNoteParser
                 return null;
         }
 
-
-        public static string GetElementValue(XElement element)
+        protected string GetElementValue(XElement element)
         {
             return element.Value;
         }
+        #endregion
 
-
-        public static Dictionary<string, QuickStyleDef> GetQuickStyleDef(XDocument doc)
-        {
-            var nodeName = "QuickStyleDef";
-
-            var result = new Dictionary<string, QuickStyleDef>();
-            var quickStyleDefs = doc.Descendants(ns + nodeName);
-            if (quickStyleDefs != null)
-            {
-                foreach (var item in quickStyleDefs)
-                {
-                    QuickStyleDef def = new QuickStyleDef();
-                    def.Index = GetAttibuteValue(item, "index");
-                    def.Name = GetAttibuteValue(item, "name");
-                    result.Add(def.Index, def);
-                }
-
-            }
-
-            return result;
-        }
-
-        public static Dictionary<string, TagDef> GetTagDef(XDocument doc)
-        {
-            var nodeName = "TagDef";
-
-            var result = new Dictionary<string, TagDef>();
-            var tagDefs = doc.Descendants(ns + nodeName);
-            if (tagDefs != null)
-            {
-                foreach (var item in tagDefs)
-                {
-                    var def = new TagDef();
-                    def.Index = GetAttibuteValue(item, "index");
-                    def.Name = GetAttibuteValue(item, "name");
-                    def.Symbol = GetAttibuteValue(item, "symbol");
-                    def.Type = GetAttibuteValue(item, "type");
-                    result.Add(def.Index, def);
-                }
-
-            }
-
-            return result;
-        }
-
-        public static string GetPageTitle(XDocument doc)
-        {
-            var nodeName = "Title";
-
-            var result = "";
-            var element = doc.Descendants(ns + nodeName).FirstOrDefault();
-            if (element != null)
-            {
-                var title = element.Descendants(ns + "OE").FirstOrDefault();
-                if (title != null)
-                    return title.Value.ToString();
-            }
-
-            return result;
-        }
-
-        public static XElement GetTitleElement(XDocument doc)
-        {
-            var nodeName = "Title";
-
-            var element = doc.Descendants(ns + nodeName).FirstOrDefault();
-
-            return element;
-        }
-        public static string GenerateMD(string parentId)
+        #region IGenerator
+        public string GenerateMD(string parentId)
         {
             var scope = Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren;
             string xml;
@@ -421,9 +136,78 @@ namespace OneNoteParser
 
             return results.ToString();
         }
+        #endregion
 
+        #region Generation helpers
+        protected Dictionary<string, QuickStyleDef> GetQuickStyleDef(XDocument doc)
+        {
+            var nodeName = "QuickStyleDef";
 
-        public static void GenerateChildObjectMD(
+            var result = new Dictionary<string, QuickStyleDef>();
+            var quickStyleDefs = doc.Descendants(ns + nodeName);
+            if (quickStyleDefs != null)
+            {
+                foreach (var item in quickStyleDefs)
+                {
+                    QuickStyleDef def = new QuickStyleDef();
+                    def.Index = GetAttibuteValue(item, "index");
+                    def.Name = GetAttibuteValue(item, "name");
+                    result.Add(def.Index, def);
+                }
+
+            }
+
+            return result;
+        }
+
+        protected Dictionary<string, TagDef> GetTagDef(XDocument doc)
+        {
+            var nodeName = "TagDef";
+
+            var result = new Dictionary<string, TagDef>();
+            var tagDefs = doc.Descendants(ns + nodeName);
+            if (tagDefs != null)
+            {
+                foreach (var item in tagDefs)
+                {
+                    var def = new TagDef();
+                    def.Index = GetAttibuteValue(item, "index");
+                    def.Name = GetAttibuteValue(item, "name");
+                    def.Symbol = GetAttibuteValue(item, "symbol");
+                    def.Type = GetAttibuteValue(item, "type");
+                    result.Add(def.Index, def);
+                }
+            }
+
+            return result;
+        }
+
+        protected string GetPageTitle(XDocument doc)
+        {
+            var nodeName = "Title";
+
+            var result = "";
+            var element = doc.Descendants(ns + nodeName).FirstOrDefault();
+            if (element != null)
+            {
+                var title = element.Descendants(ns + "OE").FirstOrDefault();
+                if (title != null)
+                    return title.Value.ToString();
+            }
+
+            return result;
+        }
+
+        protected XElement GetTitleElement(XDocument doc)
+        {
+            var nodeName = "Title";
+
+            var element = doc.Descendants(ns + nodeName).FirstOrDefault();
+
+            return element;
+        }
+
+        protected void GenerateChildObjectMD(
             XElement node, MarkdownGeneratorContext context, long level, StringBuilder results)
         {
             if (node != null)
@@ -590,7 +374,7 @@ namespace OneNoteParser
                             var h = Convert.ToDecimal(height);
 
                             context.ImageDef.SetDimensions(w, h);
-                            
+
                         }
                         break;
 
@@ -615,7 +399,7 @@ namespace OneNoteParser
                             var altText = filename.ToUpper();
                             var contentFullPath = $"file://{fullPath}";
                             contentFullPath = contentFullPath.Replace(@"\", @"/");
-                            
+
                             var image = $"![{altText}]({contentFullPath})";
                             //Lwn![test_2.](file://c:/Storage/Repositories/OneGitNote/Tester/aa/test_2.png)
 
@@ -651,7 +435,7 @@ namespace OneNoteParser
                     }
                 }
             }
-        }
-
+        } 
+        #endregion
     }
 }

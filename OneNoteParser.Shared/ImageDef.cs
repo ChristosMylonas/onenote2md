@@ -13,8 +13,6 @@ namespace OneNoteParser.Shared
         decimal height;
         string format;
         int count;
-        
-
 
         public ImageDef()
         {
@@ -49,7 +47,5 @@ namespace OneNoteParser.Shared
         {
             return $"{baseFilename}_{count}.{format}";
         }
-
-
     }
 }

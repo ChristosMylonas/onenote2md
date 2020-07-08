@@ -10,13 +10,9 @@ namespace OneNoteParser.Shared
     {
         Dictionary<string, QuickStyleDef> quickStyleDefs;
         Dictionary<string, TagDef> tagDefs;
-        TableDef tableInfo;
+        TableDef tableDef;
         ImageDef imageDef;
-        
-
         MarkdownContent lastContent;
-
-        public string ParentId { get; private set; }
 
         public MarkdownGeneratorContext(
             string parentId,
@@ -27,7 +23,7 @@ namespace OneNoteParser.Shared
             this.quickStyleDefs = quickStyleDefs;
             this.tagDefs = tagDefs;
             lastContent = content;
-            tableInfo = new TableDef();
+            tableDef = new TableDef();
             imageDef = new ImageDef();
         }
 
@@ -40,7 +36,7 @@ namespace OneNoteParser.Shared
             this.tagDefs = tagDefs;
 
             lastContent = null;
-            tableInfo = new TableDef();
+            tableDef = new TableDef();
             imageDef = new ImageDef();
         }
 
@@ -91,8 +87,10 @@ namespace OneNoteParser.Shared
             return lastContent;
         }
 
-        public TableDef TableInfo { get { return tableInfo; } }
+        public TableDef TableInfo { get { return tableDef; } }
 
         public ImageDef ImageDef { get { return imageDef; } }
+
+        public string ParentId { get; private set; }
     }
 }

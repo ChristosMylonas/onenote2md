@@ -19,14 +19,15 @@ namespace OneNoteParser.Tester
 
         private void button2_Click(object sender, EventArgs e)
         {
-            var notebookId = Parser.GetObjectId(
+            var notebookParser = new NotebookParser();
+            var notebookId = notebookParser.GetObjectId(
                 Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks, notebookBox.Text);
 
             if (String.IsNullOrEmpty(notebookId))
                 Log("Unknown notebook");
             else
             {
-                var names = Parser.GetChildObjectNames(notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections);
+                var names = notebookParser.GetChildObjectNames(notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections);
                 Log(names);
             }
 
@@ -52,14 +53,15 @@ namespace OneNoteParser.Tester
 
         private void button3_Click(object sender, EventArgs e)
         {
-            var sectionId = Parser.GetObjectId(
+            var notebookParser = new NotebookParser();
+            var sectionId = notebookParser.GetObjectId(
                 Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections, sectionBox.Text);
 
             if (String.IsNullOrEmpty(sectionId))
                 Log("Unknown section");
             else
             {
-                var names = Parser.GetChildObjectNames(sectionId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages);
+                var names = notebookParser.GetChildObjectNames(sectionId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages);
                 Log(names);
             }
         }
@@ -72,14 +74,15 @@ namespace OneNoteParser.Tester
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var pageId = Parser.GetObjectId(
+            var notebookParser = new NotebookParser();
+            var pageId = notebookParser.GetObjectId(
                 Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, pageBox.Text);
 
             if (String.IsNullOrEmpty(pageId))
                 Log("Unknown page");
             else
             {
-                var children = Parser.GetChildObjectIDs(pageId);
+                var children = notebookParser.GetChildObjectIDs(pageId);
                 Log(children);
             }
 
@@ -87,14 +90,15 @@ namespace OneNoteParser.Tester
 
         private void button5_Click(object sender, EventArgs e)
         {
-            var pageId = Parser.GetObjectId(
+            var notebookParser = new NotebookParser();
+            var pageId = notebookParser.GetObjectId(
                 Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, pageBox.Text);
 
             if (String.IsNullOrEmpty(pageId))
                 Log("Unknown page");
             else
             {
-                var objectResult = Parser.GetChildObjectID(
+                var objectResult = notebookParser.GetChildObjectID(
                     pageId, objectBox.Text);
 
                 if (String.IsNullOrEmpty(objectResult))
@@ -109,35 +113,37 @@ namespace OneNoteParser.Tester
 
         private void button6_Click(object sender, EventArgs e)
         {
-            var pageId = Parser.GetObjectId(
+            var notebookParser = new NotebookParser();
+            var pageId = notebookParser.GetObjectId(
                 Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, pageBox.Text);
 
             if (String.IsNullOrEmpty(pageId))
                 Log("Unknown page");
             else
             {
-                var children = Parser.LogChildObjects(pageId);
+                var children = notebookParser.LogChildObjects(pageId);
                 Log(children);
             }
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            var sectionId = Parser.GetObjectId(
+            var notebookParser = new NotebookParser();
+            var sectionId = notebookParser.GetObjectId(
                 Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections, sectionBox.Text);
 
             if (String.IsNullOrEmpty(sectionId))
                 Log("Unknown section");
             else
             {
-                var pageId = Parser.GetObjectId(
+                var pageId = notebookParser.GetObjectId(
                     Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, pageBox.Text);
 
                 if (String.IsNullOrEmpty(pageId))
                     Log("Unknown page");
                 else
                 {
-                    var content = Parser.GetPageContent(sectionId, pageId);
+                    var content = notebookParser.GetPageContent(sectionId, pageId);
                     Log(content);
                 }
             }
@@ -150,28 +156,31 @@ namespace OneNoteParser.Tester
 
         private void button9_Click(object sender, EventArgs e)
         {
-             var pageId = Parser.GetObjectId(
+            var notebookParser = new NotebookParser();
+            var pageId = notebookParser.GetObjectId(
                 Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, pageBox.Text);
 
             if (String.IsNullOrEmpty(pageId))
                 Log("Unknown page");
             else
             {
-                var md = Parser.GenerateMD(pageId);
+                var generator = new MDGenerator(notebookParser.GetOneNoteApp());
+                var md = generator.GenerateMD(pageId);
                 mdPreviewBox.AppendText(md);
             }
         }
 
         private void button10_Click(object sender, EventArgs e)
         {
-            var notebookId = Parser.GetObjectId(
+            var notebookParser = new NotebookParser();
+            var notebookId = notebookParser.GetObjectId(
                 Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks, notebookBox.Text);
 
             if (String.IsNullOrEmpty(notebookId))
                 Log("Unknown notebook");
             else
             {
-                Parser.Close(notebookId);
+                notebookParser.Close(notebookId);
             }
         }
     }

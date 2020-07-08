@@ -6,10 +6,6 @@ using System.Threading.Tasks;
 
 namespace OneNoteParser.Shared
 {
-    public class ColumnDef
-    {
-    }
-
     public class TableDef
     {
         bool onTable;
@@ -65,34 +61,5 @@ namespace OneNoteParser.Shared
         {
             return columnInfoList.Count();
         }
-
-        //public MarkdownContent GetHeaderMD()
-        //{
-        //    if (String.IsNullOrEmpty(Name))
-        //        return MarkdownContent.Empty();
-        //    else
-        //    {
-        //        switch (Name)
-        //        {
-        //            case "To Do":
-        //                return MarkdownContent.SingleContent(" [ ] ");
-
-        //            case "Important":
-        //                return MarkdownContent.SingleContent(":star: ");
-
-        //            case "Question":
-        //                return MarkdownContent.SingleContent(":question: ");
-
-        //            case "Critical":
-        //                return MarkdownContent.SingleContent(":exclamation: ");
-
-
-
-        //            default:
-        //                return MarkdownContent.SingleContent(":red_circle: ");
-        //        }
-        //    }
-
-        //}
     }
 }
