@@ -1,28 +1,31 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.28307.852
+VisualStudioVersion = 15.0.28307.1145
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester.csproj", "{4AD93D1B-32ED-444A-AD8A-3295B5AA7F76}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneNoteParser", "..\OneNoteParser\OneNoteParser.csproj", "{5B6BA0DA-3C84-4E2B-A8E4-89EAFF50E2F8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneNoteParser.Tester", "..\OneNoteParser.Tester\OneNoteParser.Tester.csproj", "{8D59075C-590C-4339-83CA-40A15C69EB8B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneNoteParser.Shared", "..\OneNoteParser.Shared\OneNoteParser.Shared.csproj", "{26B757E0-4879-4D55-A079-3AB0470F12F3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{062E8E0D-64EC-4A35-8106-03922B99943C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneNoteParser.Tester", "..\OneNoteParser.Tester\OneNoteParser.Tester.csproj", "{8D59075C-590C-4339-83CA-40A15C69EB8B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{77420144-4D42-4ABD-8CA1-61BCEE733907}"
 	ProjectSection(SolutionItems) = preProject
-		..\Doc\headings.md = ..\Doc\headings.md
-		images.md = images.md
 		..\Doc\notes.md = ..\Doc\notes.md
-		..\Doc\other styles.md = ..\Doc\other styles.md
-		rich content.md = rich content.md
-		rich table.md = rich table.md
+		..\Doc\Objects.docx = ..\Doc\Objects.docx
 		..\Doc\samplepage.xml = ..\Doc\samplepage.xml
-		simple table.md = simple table.md
-		tags.md = tags.md
-		task list.md = task list.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{252C0372-F35E-4F5F-8A5D-EF7EBB9FBEE4}"
+	ProjectSection(SolutionItems) = preProject
+		..\Doc\samples\headings.md = ..\Doc\samples\headings.md
+		..\Doc\samples\images.md = ..\Doc\samples\images.md
+		..\Doc\samples\other styles.md = ..\Doc\samples\other styles.md
+		..\Doc\samples\rich content.md = ..\Doc\samples\rich content.md
+		..\Doc\samples\rich table.md = ..\Doc\samples\rich table.md
+		..\Doc\samples\simple table.md = ..\Doc\samples\simple table.md
+		..\Doc\samples\tags.md = ..\Doc\samples\tags.md
+		..\Doc\samples\task list.md = ..\Doc\samples\task list.md
 	EndProjectSection
 EndProject
 Global
@@ -31,27 +34,26 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4AD93D1B-32ED-444A-AD8A-3295B5AA7F76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4AD93D1B-32ED-444A-AD8A-3295B5AA7F76}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4AD93D1B-32ED-444A-AD8A-3295B5AA7F76}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4AD93D1B-32ED-444A-AD8A-3295B5AA7F76}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5B6BA0DA-3C84-4E2B-A8E4-89EAFF50E2F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5B6BA0DA-3C84-4E2B-A8E4-89EAFF50E2F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B6BA0DA-3C84-4E2B-A8E4-89EAFF50E2F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B6BA0DA-3C84-4E2B-A8E4-89EAFF50E2F8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8D59075C-590C-4339-83CA-40A15C69EB8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D59075C-590C-4339-83CA-40A15C69EB8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8D59075C-590C-4339-83CA-40A15C69EB8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D59075C-590C-4339-83CA-40A15C69EB8B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{26B757E0-4879-4D55-A079-3AB0470F12F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{26B757E0-4879-4D55-A079-3AB0470F12F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26B757E0-4879-4D55-A079-3AB0470F12F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26B757E0-4879-4D55-A079-3AB0470F12F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D59075C-590C-4339-83CA-40A15C69EB8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D59075C-590C-4339-83CA-40A15C69EB8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D59075C-590C-4339-83CA-40A15C69EB8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D59075C-590C-4339-83CA-40A15C69EB8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{252C0372-F35E-4F5F-8A5D-EF7EBB9FBEE4} = {77420144-4D42-4ABD-8CA1-61BCEE733907}
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {EB9433B1-627B-4369-BA47-4A6E6C8BB2A8}
+		SolutionGuid = {F6FB1DF0-1349-4F61-8401-C74C35F408FF}
 	EndGlobalSection
 EndGlobal
