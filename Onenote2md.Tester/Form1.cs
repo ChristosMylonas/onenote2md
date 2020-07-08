@@ -166,7 +166,7 @@ namespace Onenote2md.Core.Tester
             {
                 var generator = new MDGenerator(notebookParser.GetOneNoteApp());
                 var md = generator.GenerateMD(pageId);
-                mdPreviewBox.AppendText(md);
+                mdPreviewBox.AppendText(md.Content);
             }
         }
 
@@ -182,6 +182,28 @@ namespace Onenote2md.Core.Tester
             {
                 notebookParser.Close(notebookId);
             }
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            var outputDirectory = textBox1.Text;
+
+            var notebookParser = new NotebookParser();
+            var pageId = notebookParser.GetObjectId(
+                Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, pageBox.Text);
+
+            if (String.IsNullOrEmpty(pageId))
+                Log("Unknown page");
+            else
+            {
+                var generator = new MDGenerator(notebookParser.GetOneNoteApp());
+                var md = generator.GenerateMD(pageId);
+
+                var writer = new MDWriter(outputDirectory);
+
+                writer.WritePage(md);
+            }
+
         }
     }
 }

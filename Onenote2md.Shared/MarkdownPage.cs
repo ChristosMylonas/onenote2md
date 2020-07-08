@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Onenote2md.Shared
 {
-    public interface IGenerator
+    public class MarkdownPage
     {
-        MarkdownPage GenerateMD(string parentId);
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public string Filename { get; set; }
     }
 }

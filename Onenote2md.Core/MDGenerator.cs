@@ -92,8 +92,10 @@ namespace Onenote2md.Core
         #endregion
 
         #region IGenerator
-        public string GenerateMD(string parentId)
+        public MarkdownPage GenerateMD(string parentId)
         {
+            MarkdownPage markdownPage = new MarkdownPage();
+
             var scope = Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren;
             string xml;
             onenoteApp.GetHierarchy(parentId, scope, out xml);
@@ -134,7 +136,8 @@ namespace Onenote2md.Core
                 }
             }
 
-            return results.ToString();
+            markdownPage.Content = results.ToString();
+            return markdownPage;
         }
         #endregion
 

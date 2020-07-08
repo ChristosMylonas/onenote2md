@@ -276,6 +276,7 @@
             this.button13.TabIndex = 24;
             this.button13.Text = "GenerateMd";
             this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
             // 
             // textBox1
             // 
@@ -283,7 +284,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(258, 20);
             this.textBox1.TabIndex = 25;
-            this.textBox1.Text = "C:\\Storage\\Repositories\\OneGitNote\\Output";
+            this.textBox1.Text = "C:\\Storage\\Repositories\\Onenote2md\\output";
             // 
             // label5
             // 
