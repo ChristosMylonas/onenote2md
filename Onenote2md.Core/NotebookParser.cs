@@ -192,11 +192,11 @@ namespace Onenote2md.Core
             var pool = doc.Descendants(ns + nodeName).ToList();
             foreach (var item in pool)
             {
-                if (item.Attribute("ID") != null)
+                var id = item.Attribute("ID").Value;
+                if (id != null && id != parentId)
                 {
-                    result.Add(item.Attribute("ID").Value, item.Attribute("name").Value);
+                    result.Add(id, item.Attribute("name").Value);
                 }
-
             }
 
             return result;

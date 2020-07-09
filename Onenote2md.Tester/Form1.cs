@@ -200,7 +200,7 @@ namespace Onenote2md.Core.Tester
             else
             {
                 var generator = new MDGenerator(notebookParser);
-                generator.GenerateMD(pageId, writer);
+                generator.GeneratePageMD(pageId, writer);
             }
         }
 
@@ -227,7 +227,7 @@ namespace Onenote2md.Core.Tester
                 {
                     var generator = new MDGenerator(notebookParser);
 
-                    generator.GenerateMD(pageId, writer);
+                    generator.GeneratePageMD(pageId, writer);
                 }
             }
         }

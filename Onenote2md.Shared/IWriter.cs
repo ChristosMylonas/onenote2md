@@ -10,7 +10,8 @@ namespace Onenote2md.Shared
     {
         void WritePage(MarkdownPage page);
         void WritePageImage(string fullPath, byte[] image);
-        void SetSubDirectories(IEnumerable<string> dirs);
+        void PushDirectory(string dir);
+        void PopDirectory();
         string GetOutputDirectory();
     }
 }

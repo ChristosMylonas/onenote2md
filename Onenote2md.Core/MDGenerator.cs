@@ -1,10 +1,8 @@
 ﻿using Onenote2md.Shared;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Onenote2md.Core
@@ -98,7 +96,7 @@ namespace Onenote2md.Core
             return DoGenerateMD(parentId, tempWriter);
         }
 
-        public void GenerateMD(string parentId, IWriter writer)
+        public void GeneratePageMD(string parentId, IWriter writer)
         {
             var md = DoGenerateMD(parentId, writer);
             writer.WritePage(md);
@@ -109,18 +107,58 @@ namespace Onenote2md.Core
             var sectionId = parser.GetObjectId(
                 Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections, sectionName);
 
+            GenerateSectionMD(sectionId, sectionName, writer);
+        }
+
+        public void GenerateSectionMD(string sectionId, string sectionName, IWriter writer)
+        {
             if (!String.IsNullOrEmpty(sectionId))
             {
                 var pageIds = parser.GetChildObjectIds(
                     sectionId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
                     ObjectType.Page);
-                writer.SetSubDirectories(new List<string>() { sectionName });
+
+                writer.PushDirectory(sectionName);
+
                 foreach (var pageId in pageIds)
                 {
-                    GenerateMD(pageId, writer);
+                    GeneratePageMD(pageId, writer);
                 }
+
+                writer.PopDirectory();
             }
         }
+
+        public void GenerateSectionGroupMD(string sectionGroupId, string sectionGroupName, IWriter writer)
+        {
+            if (!String.IsNullOrEmpty(sectionGroupId))
+            {
+                var subSectionGroups = parser.GetChildObjectMap(
+                    sectionGroupId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
+                    ObjectType.SectionGroup);
+
+                writer.PushDirectory(sectionGroupName);
+
+                foreach (var item in subSectionGroups)
+                {
+                    GenerateSectionGroupMD(item.Key, item.Value, writer);
+                }
+                
+
+
+                var subSection = parser.GetChildObjectMap(
+                    sectionGroupId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
+                    ObjectType.Section);
+
+                foreach (var section in subSection)
+                {
+                    GenerateSectionMD(section.Key, section.Value, writer);
+                }
+
+                writer.PopDirectory();
+            }
+        }
+
 
         public void GenerateNotebookMD(string notebookName, IWriter writer)
         {
@@ -129,61 +167,25 @@ namespace Onenote2md.Core
 
             if (!String.IsNullOrEmpty(notebookId))
             {
-                // generate notebook pages.
-                //var notebookPages = parser.GetChildObjectIds(
-                //    notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages);
-                //foreach (var pageId in notebookPages)
-                //{
-                //    GenerateMD(pageId, writer);
-                //}
-
-                var notebookSections = parser.GetChildObjectMap(
-                    notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
-                    ObjectType.Section);
-                foreach (var section in notebookSections)
-                {
-                    var pageIds = parser.GetChildObjectIds(
-                        section.Key, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
-                        ObjectType.Page);
-
-                    writer.SetSubDirectories(new List<string>() { section.Value });
-
-                    foreach (var pageId in pageIds)
-                    {
-                        GenerateMD(pageId, writer);
-                    }
-                }
-
-                var notebookSectionGroups = parser.GetChildObjectMap(
+                var subSectionGroups = parser.GetChildObjectMap(
                     notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
                     ObjectType.SectionGroup);
-                foreach (var sectionGroup in notebookSectionGroups)
+                
+                foreach (var item in subSectionGroups)
                 {
-                    var sections = parser.GetChildObjectMap(
-                        sectionGroup.Key, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
-                        ObjectType.Section);
-                    foreach (var section in sections)
-                    {
-                        var pageIds = parser.GetChildObjectIds(
-                            section.Key, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
-                            ObjectType.Page);
+                    GenerateSectionGroupMD(item.Key, item.Value, writer);
+                }
 
-                        writer.SetSubDirectories(new List<string>()
-                        {
-                            sectionGroup.Value, section.Value
-                        });
+                var subSection = parser.GetChildObjectMap(
+                    notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
+                    ObjectType.Section);
 
-                        foreach (var pageId in pageIds)
-                        {
-                            GenerateMD(pageId, writer);
-                        }
-                    }
+                foreach (var section in subSection)
+                {
+                    GenerateSectionMD(section.Key, section.Value, writer);
                 }
             }
         }
-
-
-
 
         protected MarkdownPage DoGenerateMD(string parentId, IWriter writer)
         {

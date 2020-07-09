@@ -12,7 +12,7 @@ namespace Onenote2md.Core
     {
         string rootOutputDirectory;
         bool overwrite;
-        List<string> subDirectories;
+        Stack<string> subDirectories;
 
         public MDWriter(string rootOutputDirectory, bool overwrite)
         {
@@ -22,13 +22,17 @@ namespace Onenote2md.Core
             if (!Directory.Exists(rootOutputDirectory))
                 Directory.CreateDirectory(rootOutputDirectory);
 
-            subDirectories = new List<string>();
+            subDirectories = new Stack<string>();
         }
 
-        public void SetSubDirectories(IEnumerable<string> dirs)
+        public void PushDirectory(string dir)
         {
-            subDirectories.Clear();
-            subDirectories.AddRange(dirs);
+            subDirectories.Push(dir);
+        }
+
+        public void PopDirectory()
+        {
+            subDirectories.Pop();
         }
 
         public string GetOutputDirectory()
@@ -38,7 +42,7 @@ namespace Onenote2md.Core
             else
             {
                 var paths = new List<string>() { rootOutputDirectory };
-                paths.AddRange(subDirectories);
+                paths.AddRange(subDirectories.Reverse());
                 return Path.Combine(paths.ToArray());
             }
         }

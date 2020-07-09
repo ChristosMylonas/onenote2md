@@ -10,8 +10,10 @@ namespace Onenote2md.Shared
     {
         MarkdownPage PreviewMD(string parentId);
 
-        void GenerateMD(string parentId, IWriter writer);
+        void GeneratePageMD(string parentId, IWriter writer);
         void GenerateSectionMD(string sectionName, IWriter writer);
+        void GenerateSectionMD(string sectionId, string sectionName, IWriter writer);
+        void GenerateSectionGroupMD(string sectionGroupId, string sectionGroupName, IWriter writer);
         void GenerateNotebookMD(string notebookName, IWriter writer);
     }
 }
