@@ -1,5 +1,5 @@
 ﻿# onenote2md
-An automated tool to convert OneNote 2016 notebooks to markdown files. :+1:
+An automated tool to convert OneNote notebooks to markdown files. :+1:
 
 # Features
 - Convert OneNote 2016 Notebooks/Sections/Section Groups/Pages to folders and md files.
@@ -10,9 +10,13 @@ An automated tool to convert OneNote 2016 notebooks to markdown files. :+1:
 - Converts tags/todo lists.
 - Converts code blocks/citations/quotes.
 
+# How to use it
+- Execute from command-line using `Onenote2md.Cmd NOTEBOOKNAME` to convert your notebook to md in current directory.
+- Use `Onenote2md.Cmd NOTEBOOKNAME OUTPUTDIR` to specify your output directory.
+
 # OneNote object model
 - OneNote uses a simple object model of nested hierarchical objects.
-The base object is the `Notebook` which contain `Section` object which in turn contain `Page` objects.
+The base object is the `Notebook` which contain `SectionGroups` and `Section` objects which in turn contain `Page` objects.
 - Page contain the actual note information including text, image, lists, table and other formatted content.
 - Page itself is further decomposed into a hierachical structure containing page object `OEChildren` elements.
 - Each Page specifies a `Title` and a `PageLevel`.
@@ -43,6 +47,9 @@ Table:
 ## OneNote object model synopsis:
 ```
 Notebook
+    SectionGroup
+        SectionGroup
+        Section
     Section
         Page
             OEChildren

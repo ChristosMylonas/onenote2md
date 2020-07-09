@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onenote2md.Shared", "..\One
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onenote2md.Core", "..\Onenote2md.Core\Onenote2md.Core.csproj", "{5B6BA0DA-3C84-4E2B-A8E4-89EAFF50E2F8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onenote2md.Cmd", "..\Onenote2md.Cmd\Onenote2md.Cmd.csproj", "{FAD90F91-5AF6-4AF1-BC01-6B8CBA901017}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{5B6BA0DA-3C84-4E2B-A8E4-89EAFF50E2F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B6BA0DA-3C84-4E2B-A8E4-89EAFF50E2F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B6BA0DA-3C84-4E2B-A8E4-89EAFF50E2F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAD90F91-5AF6-4AF1-BC01-6B8CBA901017}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAD90F91-5AF6-4AF1-BC01-6B8CBA901017}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAD90F91-5AF6-4AF1-BC01-6B8CBA901017}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAD90F91-5AF6-4AF1-BC01-6B8CBA901017}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
