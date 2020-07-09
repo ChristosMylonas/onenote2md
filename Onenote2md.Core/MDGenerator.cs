@@ -29,10 +29,8 @@ namespace Onenote2md.Core
             this.parser = parser;
             this.onenoteApp = this.parser.GetOneNoteApp();
 
-            string xml;
-            onenoteApp.GetHierarchy(null, Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks, out xml);
-
-            var doc = XDocument.Parse(xml);
+            var doc = parser.GetXDocument(
+                null, Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks);
             ns = doc.Root.Name.Namespace;
         }
         #endregion
@@ -114,7 +112,8 @@ namespace Onenote2md.Core
             if (!String.IsNullOrEmpty(sectionId))
             {
                 var pageIds = parser.GetChildObjectIds(
-                    sectionId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages);
+                    sectionId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
+                    ObjectType.Page);
                 writer.SetSubDirectories(new List<string>() { sectionName });
                 foreach (var pageId in pageIds)
                 {
@@ -131,25 +130,53 @@ namespace Onenote2md.Core
             if (!String.IsNullOrEmpty(notebookId))
             {
                 // generate notebook pages.
-                var notebookPages = parser.GetChildObjectIds(
-                    notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages);
-                foreach (var pageId in notebookPages)
-                {
-                    GenerateMD(pageId, writer);
-                }
+                //var notebookPages = parser.GetChildObjectIds(
+                //    notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages);
+                //foreach (var pageId in notebookPages)
+                //{
+                //    GenerateMD(pageId, writer);
+                //}
 
                 var notebookSections = parser.GetChildObjectMap(
-                    notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections);
+                    notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
+                    ObjectType.Section);
                 foreach (var section in notebookSections)
                 {
                     var pageIds = parser.GetChildObjectIds(
-                        section.Key, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages);
+                        section.Key, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
+                        ObjectType.Page);
 
                     writer.SetSubDirectories(new List<string>() { section.Value });
 
                     foreach (var pageId in pageIds)
                     {
                         GenerateMD(pageId, writer);
+                    }
+                }
+
+                var notebookSectionGroups = parser.GetChildObjectMap(
+                    notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
+                    ObjectType.SectionGroup);
+                foreach (var sectionGroup in notebookSectionGroups)
+                {
+                    var sections = parser.GetChildObjectMap(
+                        sectionGroup.Key, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
+                        ObjectType.Section);
+                    foreach (var section in sections)
+                    {
+                        var pageIds = parser.GetChildObjectIds(
+                            section.Key, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
+                            ObjectType.Page);
+
+                        writer.SetSubDirectories(new List<string>()
+                        {
+                            sectionGroup.Value, section.Value
+                        });
+
+                        foreach (var pageId in pageIds)
+                        {
+                            GenerateMD(pageId, writer);
+                        }
                     }
                 }
             }
@@ -163,10 +190,7 @@ namespace Onenote2md.Core
             MarkdownPage markdownPage = new MarkdownPage();
 
             var scope = Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren;
-            string xml;
-            onenoteApp.GetHierarchy(parentId, scope, out xml);
-
-            var doc = XDocument.Parse(xml);
+            var doc = parser.GetXDocument(parentId, scope);
 
             StringBuilder results = new StringBuilder();
 

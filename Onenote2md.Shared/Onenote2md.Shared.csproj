@@ -49,6 +49,7 @@
     <Compile Include="MarkdownPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ImageDef.cs" />
+    <Compile Include="ObjectType.cs" />
     <Compile Include="TableDef.cs" />
     <Compile Include="TagDef.cs" />
     <Compile Include="QuickStyleDef.cs" />

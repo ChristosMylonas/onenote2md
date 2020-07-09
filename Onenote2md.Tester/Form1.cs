@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Onenote2md.Shared;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -28,6 +29,7 @@ namespace Onenote2md.Core.Tester
             else
             {
                 var names = notebookParser.GetChildObjectNames(notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections);
+                
                 Log(names);
             }
 
@@ -218,7 +220,8 @@ namespace Onenote2md.Core.Tester
             {
                 var writer = new MDWriter(outputDirectory, true);
                 var pageIds = notebookParser.GetChildObjectIds(
-                    sectionId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages);
+                    sectionId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
+                    ObjectType.Page);
 
                 foreach (var pageId in pageIds)
                 {

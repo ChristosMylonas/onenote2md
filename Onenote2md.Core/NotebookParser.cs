@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Onenote2md.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,10 +25,7 @@ namespace Onenote2md.Core
 
         private void Initialize()
         {
-            string xml;
-            onenoteApp.GetHierarchy(null, Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks, out xml);
-
-            var doc = XDocument.Parse(xml);
+            var doc = GetXDocument(null, Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks);
             ns = doc.Root.Name.Namespace;
         }
         #endregion
@@ -40,6 +38,16 @@ namespace Onenote2md.Core
         public void Close(string notebookId)
         {
             onenoteApp.CloseNotebook(notebookId);
+        }
+
+
+        public XDocument GetXDocument(string parentId, Microsoft.Office.Interop.OneNote.HierarchyScope scope)
+        {
+            string xml;
+            onenoteApp.GetHierarchy(parentId, scope, out xml);
+
+            var doc = XDocument.Parse(xml);
+            return doc;
         }
 
         public string GetNodeNameBasedOnScope(Microsoft.Office.Interop.OneNote.HierarchyScope scope)
@@ -72,6 +80,40 @@ namespace Onenote2md.Core
             return nodeName;
         }
 
+        public string GetNodeNameBasedOnObjectType(ObjectType objectType)
+        {
+            string nodeName;
+
+            switch (objectType)
+            {
+                case ObjectType.Notebook:
+                    nodeName = "Notebook";
+                    break;
+
+                case ObjectType.Page:
+                    nodeName = "Page";
+                    break;
+
+                case ObjectType.SectionGroup:
+                    nodeName = "SectionGroup";
+                    break;
+
+                case ObjectType.Section:
+                    nodeName = "Section";
+                    break;
+
+                case ObjectType.Children:
+                    nodeName = "OEChildren";
+                    break;
+
+                default:
+                    return nodeName = "";
+            }
+
+            return nodeName;
+        }
+
+
 
         public string GetObjectId(Microsoft.Office.Interop.OneNote.HierarchyScope scope, string objectName)
         {
@@ -81,10 +123,7 @@ namespace Onenote2md.Core
         public string GetObjectId(string parentId,
             Microsoft.Office.Interop.OneNote.HierarchyScope scope, string objectName)
         {
-            string xml;
-            onenoteApp.GetHierarchy(parentId, scope, out xml);
-
-            var doc = XDocument.Parse(xml);
+            var doc = GetXDocument(parentId, scope);
             var nodeName = "";
 
             switch (scope)
@@ -116,10 +155,7 @@ namespace Onenote2md.Core
         public List<string> GetChildObjectNames(string parentId,
             Microsoft.Office.Interop.OneNote.HierarchyScope scope)
         {
-            string xml;
-            onenoteApp.GetHierarchy(parentId, scope, out xml);
-
-            var doc = XDocument.Parse(xml);
+            var doc = GetXDocument(parentId, scope);
             var nodeName = GetNodeNameBasedOnScope(scope);
 
             var names = doc.Descendants(ns + nodeName)
@@ -130,13 +166,11 @@ namespace Onenote2md.Core
         }
 
         public List<string> GetChildObjectIds(string parentId,
-            Microsoft.Office.Interop.OneNote.HierarchyScope scope)
+            Microsoft.Office.Interop.OneNote.HierarchyScope scope,
+            ObjectType objectType)
         {
-            string xml;
-            onenoteApp.GetHierarchy(parentId, scope, out xml);
-
-            var doc = XDocument.Parse(xml);
-            var nodeName = GetNodeNameBasedOnScope(scope);
+            var doc = GetXDocument(parentId, scope);
+            var nodeName = GetNodeNameBasedOnObjectType(objectType);
 
             var names = doc.Descendants(ns + nodeName)
                 .Where(q => q.Attribute("ID") != null)
@@ -148,16 +182,14 @@ namespace Onenote2md.Core
 
         public IDictionary<string, string> GetChildObjectMap(
             string parentId,
-            Microsoft.Office.Interop.OneNote.HierarchyScope scope)
+            Microsoft.Office.Interop.OneNote.HierarchyScope scope,
+            ObjectType requestedObject)
         {
-            string xml;
-            onenoteApp.GetHierarchy(parentId, scope, out xml);
-
-            var doc = XDocument.Parse(xml);
-            var nodeName = GetNodeNameBasedOnScope(scope);
+            var doc = GetXDocument(parentId, scope);
+            var nodeName = GetNodeNameBasedOnObjectType(requestedObject);
 
             var result = new Dictionary<string, string>();
-            var pool = doc.Descendants(ns + nodeName).ToList(); 
+            var pool = doc.Descendants(ns + nodeName).ToList();
             foreach (var item in pool)
             {
                 if (item.Attribute("ID") != null)
@@ -172,11 +204,7 @@ namespace Onenote2md.Core
 
         public List<string> GetChildObjectIDs(string parentId)
         {
-            var scope = Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren;
-            string xml;
-            onenoteApp.GetHierarchy(parentId, scope, out xml);
-
-            var doc = XDocument.Parse(xml);
+            var doc = GetXDocument(parentId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren);
             var nodeName = "OEChildren";
 
             List<string> result = new List<string>();
@@ -197,11 +225,7 @@ namespace Onenote2md.Core
 
         public string GetChildObjectID(string parentId, string objectID)
         {
-            var scope = Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren;
-            string xml;
-            onenoteApp.GetHierarchy(parentId, scope, out xml);
-
-            var doc = XDocument.Parse(xml);
+            var doc = GetXDocument(parentId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren);
             var nodeName = "OEChildren";
 
             var children = doc.Descendants(ns + nodeName).FirstOrDefault();
@@ -222,11 +246,7 @@ namespace Onenote2md.Core
 
         public List<string> LogChildObjects(string parentId)
         {
-            var scope = Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren;
-            string xml;
-            onenoteApp.GetHierarchy(parentId, scope, out xml);
-
-            var doc = XDocument.Parse(xml);
+            var doc = GetXDocument(parentId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren);
             var nodeName = "OEChildren";
 
             List<string> results = new List<string>();
