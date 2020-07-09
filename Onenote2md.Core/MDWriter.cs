@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Onenote2md.Core
 {
-    public class MDWriter
+    public class MDWriter : IWriter
     {
         string outputDirectory;
         bool overwrite;
@@ -22,10 +22,23 @@ namespace Onenote2md.Core
                 Directory.CreateDirectory(outputDirectory);
         }
 
+        public string GetOutputDirectory()
+        {
+            return outputDirectory;
+        }
 
         public void WritePage(MarkdownPage page)
         {
             WriteFile(page);
+        }
+
+        public void WritePageImage(string fullPath, byte[] image)
+        {
+            using (var imageFile = new FileStream(fullPath, FileMode.Create))
+            {
+                imageFile.Write(image, 0, image.Length);
+                imageFile.Flush();
+            }
         }
 
         protected string BuildFullPath(string pageFilename)

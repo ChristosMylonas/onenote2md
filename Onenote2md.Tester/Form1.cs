@@ -165,7 +165,7 @@ namespace Onenote2md.Core.Tester
             else
             {
                 var generator = new MDGenerator(notebookParser.GetOneNoteApp());
-                var md = generator.GenerateMD(pageId);
+                var md = generator.PreviewMD(pageId);
                 mdPreviewBox.AppendText(md.Content);
             }
         }
@@ -187,6 +187,7 @@ namespace Onenote2md.Core.Tester
         private void button13_Click(object sender, EventArgs e)
         {
             var outputDirectory = textBox1.Text;
+            var writer = new MDWriter(outputDirectory, true);
 
             var notebookParser = new NotebookParser();
             var pageId = notebookParser.GetObjectId(
@@ -197,13 +198,31 @@ namespace Onenote2md.Core.Tester
             else
             {
                 var generator = new MDGenerator(notebookParser.GetOneNoteApp());
-                var md = generator.GenerateMD(pageId);
-
-                var writer = new MDWriter(outputDirectory, true);
-
-                writer.WritePage(md);
+                generator.GenerateMD(pageId, writer);
             }
+        }
 
+        private void button12_Click(object sender, EventArgs e)
+        {
+            var notebookParser = new NotebookParser();
+            var sectionId = notebookParser.GetObjectId(
+                Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections, sectionBox.Text);
+
+            if (String.IsNullOrEmpty(sectionId))
+                Log("Unknown section");
+            else
+            {
+                var outputDirectory = textBox1.Text;
+                var writer = new MDWriter(outputDirectory, true);
+                var pageIds = notebookParser.GetChildObjectIds(sectionId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages);
+
+                foreach (var pageId in pageIds)
+                {
+                    var generator = new MDGenerator(notebookParser.GetOneNoteApp());
+
+                    generator.GenerateMD(pageId, writer);
+                }
+            }
         }
     }
 }

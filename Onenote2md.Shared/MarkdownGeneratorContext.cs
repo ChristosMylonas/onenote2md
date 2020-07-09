@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,13 +15,16 @@ namespace Onenote2md.Shared
         ImageDef imageDef;
         MarkdownContent lastContent;
         string pageTitle;
-        string pageFilename;
+        IWriter writer;
+        
 
         public MarkdownGeneratorContext(
+            IWriter writer,
             string parentId,
             Dictionary<string, QuickStyleDef> quickStyleDefs, Dictionary<string, TagDef> tagDefs,
             MarkdownContent content)
         {
+            this.writer = writer;
             this.ParentId = parentId;
             this.quickStyleDefs = quickStyleDefs;
             this.tagDefs = tagDefs;
@@ -30,9 +34,11 @@ namespace Onenote2md.Shared
         }
 
         public MarkdownGeneratorContext(
+            IWriter writer,
             string parentId,
             Dictionary<string, QuickStyleDef> quickStyleDefs, Dictionary<string, TagDef> tagDefs)
         {
+            this.writer = writer;
             this.ParentId = parentId;
             this.quickStyleDefs = quickStyleDefs;
             this.tagDefs = tagDefs;
@@ -104,10 +110,26 @@ namespace Onenote2md.Shared
             return $"{pageTitle}.md";
         }
 
+        public string GetPageFullPath()
+        {
+            return Path.Combine(writer.GetOutputDirectory(), GetPageFilename());
+        }
+
+        public string GetPageImageFullPath()
+        {
+            return Path.Combine(writer.GetOutputDirectory(), ImageDef.GetFilename(pageTitle));
+        }
+
+        public string GetPageImageFilename()
+        {
+            return ImageDef.GetFilename(pageTitle);
+        }
+
         public TableDef TableInfo { get { return tableDef; } }
 
         public ImageDef ImageDef { get { return imageDef; } }
 
         public string ParentId { get; private set; }
+        public IWriter Writer { get { return writer; } }
     }
 }

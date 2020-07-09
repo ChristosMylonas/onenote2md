@@ -49,7 +49,6 @@
     <Compile Include="MDGenerator.cs" />
     <Compile Include="MDWriter.cs" />
     <Compile Include="NotebookParser.cs" />
-    <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -92,7 +92,19 @@ namespace Onenote2md.Core
         #endregion
 
         #region IGenerator
-        public MarkdownPage GenerateMD(string parentId)
+        public MarkdownPage PreviewMD(string parentId)
+        {
+            MDWriter tempWriter = new MDWriter(@"c:\temp\onenote2md", true);
+            return DoGenerateMD(parentId, tempWriter);
+        }
+
+        public void GenerateMD(string parentId, IWriter writer)
+        {
+            var md = DoGenerateMD(parentId, writer);
+            writer.WritePage(md);
+        }
+
+        protected MarkdownPage DoGenerateMD(string parentId, IWriter writer)
         {
             MarkdownPage markdownPage = new MarkdownPage();
 
@@ -104,9 +116,10 @@ namespace Onenote2md.Core
 
             StringBuilder results = new StringBuilder();
 
+            // create context
             var quickStyles = GetQuickStyleDef(doc);
             var tags = GetTagDef(doc);
-            var context = new MarkdownGeneratorContext(parentId, quickStyles, tags);
+            var context = new MarkdownGeneratorContext(writer, parentId, quickStyles, tags);
             var pageTitle = GetPageTitle(doc);
             context.SetPageTitle(pageTitle);
 
@@ -391,18 +404,12 @@ namespace Onenote2md.Core
                             string stringValue;
                             onenoteApp.GetBinaryPageContent(context.ParentId, id, out stringValue);
 
-                            var path = @"C:\Storage\Repositories\OneGitNote\OneNoteParser.Tester\bin\Debug\img";
-                            var filename = context.ImageDef.GetFilename("test");
-                            var fullPath = Path.Combine(path, filename);
 
+                            var fullPath = context.GetPageImageFullPath();
                             var bytes = Convert.FromBase64String(stringValue);
-                            using (var imageFile = new FileStream(fullPath, FileMode.Create))
-                            {
-                                imageFile.Write(bytes, 0, bytes.Length);
-                                imageFile.Flush();
-                            }
+                            context.Writer.WritePageImage(fullPath, bytes);
 
-                            var altText = filename.ToUpper();
+                            var altText = context.GetPageImageFilename();
                             var contentFullPath = $"file://{fullPath}";
                             contentFullPath = contentFullPath.Replace(@"\", @"/");
 

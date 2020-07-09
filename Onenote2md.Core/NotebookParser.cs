@@ -121,6 +121,47 @@ namespace Onenote2md.Core
             return names;
         }
 
+        public List<string> GetChildObjectIds(string parentId,
+            Microsoft.Office.Interop.OneNote.HierarchyScope scope)
+        {
+            string xml;
+            onenoteApp.GetHierarchy(parentId, scope, out xml);
+
+            var doc = XDocument.Parse(xml);
+            var nodeName = "";
+
+            switch (scope)
+            {
+                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks):
+                    nodeName = "Notebook";
+                    break;
+
+                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages):
+                    nodeName = "Page";
+                    break;
+
+                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections):
+                    nodeName = "Section";
+                    break;
+
+                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren):
+                    nodeName = "OEChildren";
+                    break;
+
+
+                default:
+                    return null;
+            }
+
+            var names = doc.Descendants(ns + nodeName)
+                .Where(q => q.Attribute("ID") != null)
+                .Select(q => q.Attribute("ID").Value)
+                .ToList();
+
+            return names;
+        }
+
+
         public List<string> GetChildObjectIDs(string parentId)
         {
             var scope = Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren;
@@ -144,6 +185,7 @@ namespace Onenote2md.Core
 
             return result;
         }
+
 
         public string GetChildObjectID(string parentId, string objectID)
         {
@@ -210,7 +252,7 @@ namespace Onenote2md.Core
             return source;
         }
 
-                public static void LogChildObject(XElement node, int level, List<string> results)
+        public static void LogChildObject(XElement node, int level, List<string> results)
         {
             if (node != null)
             {
