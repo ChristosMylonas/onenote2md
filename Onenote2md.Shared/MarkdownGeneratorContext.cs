@@ -13,6 +13,8 @@ namespace Onenote2md.Shared
         TableDef tableDef;
         ImageDef imageDef;
         MarkdownContent lastContent;
+        string pageTitle;
+        string pageFilename;
 
         public MarkdownGeneratorContext(
             string parentId,
@@ -85,6 +87,21 @@ namespace Onenote2md.Shared
         public MarkdownContent Get()
         {
             return lastContent;
+        }
+
+        public void SetPageTitle(string pageTitle)
+        {
+            this.pageTitle = pageTitle;
+        }
+
+        public string GetPageTitle()
+        {
+            return pageTitle;
+        }
+
+        public string GetPageFilename()
+        {
+            return $"{pageTitle}.md";
         }
 
         public TableDef TableInfo { get { return tableDef; } }

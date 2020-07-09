@@ -11,10 +11,12 @@ namespace Onenote2md.Core
     public class MDWriter
     {
         string outputDirectory;
+        bool overwrite;
 
-        public MDWriter(string outputDirectory)
+        public MDWriter(string outputDirectory, bool overwrite)
         {
             this.outputDirectory = outputDirectory;
+            this.overwrite = overwrite;
 
             if (!Directory.Exists(outputDirectory))
                 Directory.CreateDirectory(outputDirectory);
@@ -23,8 +25,31 @@ namespace Onenote2md.Core
 
         public void WritePage(MarkdownPage page)
         {
-           
+            WriteFile(page);
+        }
 
+        protected string BuildFullPath(string pageFilename)
+        {
+            return Path.Combine(outputDirectory, pageFilename);
+        }
+
+        protected void WriteFile(MarkdownPage page)
+        {
+            string fullPath = BuildFullPath(page.Filename);
+
+            if (File.Exists(fullPath))
+            {
+                if (!overwrite)
+                    return;
+            }
+
+            using (FileStream fileStream = File.Create(fullPath))
+            {
+                using (StreamWriter writer = new StreamWriter(fileStream))
+                {
+                    writer.Write(page.Content);
+                }
+            }
         }
     }
 }

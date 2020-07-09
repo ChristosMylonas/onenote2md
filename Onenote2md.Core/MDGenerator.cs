@@ -106,11 +106,11 @@ namespace Onenote2md.Core
 
             var quickStyles = GetQuickStyleDef(doc);
             var tags = GetTagDef(doc);
+            var context = new MarkdownGeneratorContext(parentId, quickStyles, tags);
+            var pageTitle = GetPageTitle(doc);
+            context.SetPageTitle(pageTitle);
 
             var titleElement = GetTitleElement(doc);
-
-            var context = new MarkdownGeneratorContext(parentId, quickStyles, tags);
-
             GenerateChildObjectMD(titleElement, context, 0, results);
 
 
@@ -137,6 +137,9 @@ namespace Onenote2md.Core
             }
 
             markdownPage.Content = results.ToString();
+            markdownPage.Title = context.GetPageTitle();
+            markdownPage.Filename = context.GetPageFilename();
+
             return markdownPage;
         }
         #endregion

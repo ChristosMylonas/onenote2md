@@ -199,7 +199,7 @@ namespace Onenote2md.Core.Tester
                 var generator = new MDGenerator(notebookParser.GetOneNoteApp());
                 var md = generator.GenerateMD(pageId);
 
-                var writer = new MDWriter(outputDirectory);
+                var writer = new MDWriter(outputDirectory, true);
 
                 writer.WritePage(md);
             }
