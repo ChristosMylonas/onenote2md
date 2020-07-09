@@ -10,21 +10,37 @@ namespace Onenote2md.Core
 {
     public class MDWriter : IWriter
     {
-        string outputDirectory;
+        string rootOutputDirectory;
         bool overwrite;
+        List<string> subDirectories;
 
-        public MDWriter(string outputDirectory, bool overwrite)
+        public MDWriter(string rootOutputDirectory, bool overwrite)
         {
-            this.outputDirectory = outputDirectory;
+            this.rootOutputDirectory = rootOutputDirectory;
             this.overwrite = overwrite;
 
-            if (!Directory.Exists(outputDirectory))
-                Directory.CreateDirectory(outputDirectory);
+            if (!Directory.Exists(rootOutputDirectory))
+                Directory.CreateDirectory(rootOutputDirectory);
+
+            subDirectories = new List<string>();
+        }
+
+        public void SetSubDirectories(IEnumerable<string> dirs)
+        {
+            subDirectories.Clear();
+            subDirectories.AddRange(dirs);
         }
 
         public string GetOutputDirectory()
         {
-            return outputDirectory;
+            if (!subDirectories.Any())
+                return rootOutputDirectory;
+            else
+            {
+                var paths = new List<string>() { rootOutputDirectory };
+                paths.AddRange(subDirectories);
+                return Path.Combine(paths.ToArray());
+            }
         }
 
         public void WritePage(MarkdownPage page)
@@ -41,14 +57,15 @@ namespace Onenote2md.Core
             }
         }
 
-        protected string BuildFullPath(string pageFilename)
-        {
-            return Path.Combine(outputDirectory, pageFilename);
-        }
+        //protected string BuildFullPath(string pageFilename)
+        //{
+        //    return Path.Combine(outputDirectory, pageFilename);
+        //}
 
         protected void WriteFile(MarkdownPage page)
         {
-            string fullPath = BuildFullPath(page.Filename);
+            //string fullPath = BuildFullPath(page.Filename);
+            string fullPath = page.Filename;
 
             if (File.Exists(fullPath))
             {

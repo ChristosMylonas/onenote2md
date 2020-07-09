@@ -9,6 +9,9 @@ namespace Onenote2md.Shared
     public interface IGenerator
     {
         MarkdownPage PreviewMD(string parentId);
+
         void GenerateMD(string parentId, IWriter writer);
+        void GenerateSectionMD(string sectionName, IWriter writer);
+        void GenerateNotebookMD(string notebookName, IWriter writer);
     }
 }

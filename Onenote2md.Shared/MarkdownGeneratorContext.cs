@@ -16,7 +16,7 @@ namespace Onenote2md.Shared
         MarkdownContent lastContent;
         string pageTitle;
         IWriter writer;
-        
+
 
         public MarkdownGeneratorContext(
             IWriter writer,
@@ -110,15 +110,28 @@ namespace Onenote2md.Shared
             return $"{pageTitle}.md";
         }
 
+        public void EnsureDirectoryExists(string dir)
+        {
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+        }
+
         public string GetPageFullPath()
         {
-            return Path.Combine(writer.GetOutputDirectory(), GetPageFilename());
+            var outputDirectory = writer.GetOutputDirectory();
+            EnsureDirectoryExists(outputDirectory);
+
+            return Path.Combine(outputDirectory, GetPageFilename());
         }
 
         public string GetPageImageFullPath()
         {
-            return Path.Combine(writer.GetOutputDirectory(), ImageDef.GetFilename(pageTitle));
+            var outputDirectory = writer.GetOutputDirectory();
+            EnsureDirectoryExists(outputDirectory);
+
+            return Path.Combine(outputDirectory, ImageDef.GetFilename(pageTitle));
         }
+
 
         public string GetPageImageFilename()
         {

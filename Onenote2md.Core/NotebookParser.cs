@@ -42,6 +42,37 @@ namespace Onenote2md.Core
             onenoteApp.CloseNotebook(notebookId);
         }
 
+        public string GetNodeNameBasedOnScope(Microsoft.Office.Interop.OneNote.HierarchyScope scope)
+        {
+            string nodeName;
+
+            switch (scope)
+            {
+                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks):
+                    nodeName = "Notebook";
+                    break;
+
+                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages):
+                    nodeName = "Page";
+                    break;
+
+                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections):
+                    nodeName = "Section";
+                    break;
+
+                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren):
+                    nodeName = "OEChildren";
+                    break;
+
+
+                default:
+                    return nodeName = "";
+            }
+
+            return nodeName;
+        }
+
+
         public string GetObjectId(Microsoft.Office.Interop.OneNote.HierarchyScope scope, string objectName)
         {
             return GetObjectId(null, scope, objectName);
@@ -89,30 +120,7 @@ namespace Onenote2md.Core
             onenoteApp.GetHierarchy(parentId, scope, out xml);
 
             var doc = XDocument.Parse(xml);
-            var nodeName = "";
-
-            switch (scope)
-            {
-                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks):
-                    nodeName = "Notebook";
-                    break;
-
-                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages):
-                    nodeName = "Page";
-                    break;
-
-                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections):
-                    nodeName = "Section";
-                    break;
-
-                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren):
-                    nodeName = "OEChildren";
-                    break;
-
-
-                default:
-                    return null;
-            }
+            var nodeName = GetNodeNameBasedOnScope(scope);
 
             var names = doc.Descendants(ns + nodeName)
                 .Select(n => n.Attribute("name").Value)
@@ -128,30 +136,7 @@ namespace Onenote2md.Core
             onenoteApp.GetHierarchy(parentId, scope, out xml);
 
             var doc = XDocument.Parse(xml);
-            var nodeName = "";
-
-            switch (scope)
-            {
-                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks):
-                    nodeName = "Notebook";
-                    break;
-
-                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages):
-                    nodeName = "Page";
-                    break;
-
-                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections):
-                    nodeName = "Section";
-                    break;
-
-                case (Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren):
-                    nodeName = "OEChildren";
-                    break;
-
-
-                default:
-                    return null;
-            }
+            var nodeName = GetNodeNameBasedOnScope(scope);
 
             var names = doc.Descendants(ns + nodeName)
                 .Where(q => q.Attribute("ID") != null)
@@ -161,6 +146,29 @@ namespace Onenote2md.Core
             return names;
         }
 
+        public IDictionary<string, string> GetChildObjectMap(
+            string parentId,
+            Microsoft.Office.Interop.OneNote.HierarchyScope scope)
+        {
+            string xml;
+            onenoteApp.GetHierarchy(parentId, scope, out xml);
+
+            var doc = XDocument.Parse(xml);
+            var nodeName = GetNodeNameBasedOnScope(scope);
+
+            var result = new Dictionary<string, string>();
+            var pool = doc.Descendants(ns + nodeName).ToList(); 
+            foreach (var item in pool)
+            {
+                if (item.Attribute("ID") != null)
+                {
+                    result.Add(item.Attribute("ID").Value, item.Attribute("name").Value);
+                }
+
+            }
+
+            return result;
+        }
 
         public List<string> GetChildObjectIDs(string parentId)
         {

@@ -164,7 +164,7 @@ namespace Onenote2md.Core.Tester
                 Log("Unknown page");
             else
             {
-                var generator = new MDGenerator(notebookParser.GetOneNoteApp());
+                var generator = new MDGenerator(notebookParser);
                 var md = generator.PreviewMD(pageId);
                 mdPreviewBox.AppendText(md.Content);
             }
@@ -197,32 +197,58 @@ namespace Onenote2md.Core.Tester
                 Log("Unknown page");
             else
             {
-                var generator = new MDGenerator(notebookParser.GetOneNoteApp());
+                var generator = new MDGenerator(notebookParser);
                 generator.GenerateMD(pageId, writer);
             }
         }
 
         private void button12_Click(object sender, EventArgs e)
         {
+            var sectionName = sectionBox.Text;
+            var outputDirectory = textBox1.Text;
+
             var notebookParser = new NotebookParser();
+
             var sectionId = notebookParser.GetObjectId(
-                Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections, sectionBox.Text);
+                Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections, sectionName);
 
             if (String.IsNullOrEmpty(sectionId))
                 Log("Unknown section");
             else
             {
-                var outputDirectory = textBox1.Text;
                 var writer = new MDWriter(outputDirectory, true);
-                var pageIds = notebookParser.GetChildObjectIds(sectionId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages);
+                var pageIds = notebookParser.GetChildObjectIds(
+                    sectionId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages);
 
                 foreach (var pageId in pageIds)
                 {
-                    var generator = new MDGenerator(notebookParser.GetOneNoteApp());
+                    var generator = new MDGenerator(notebookParser);
 
                     generator.GenerateMD(pageId, writer);
                 }
             }
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            var sectionName = sectionBox.Text;
+            var outputDirectory = textBox1.Text;
+
+            var notebookParser = new NotebookParser();
+            var writer = new MDWriter(outputDirectory, true);
+            var generator = new MDGenerator(notebookParser);
+            generator.GenerateSectionMD(sectionName, writer);
+        }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+            var notebookName = notebookBox.Text;
+            var outputDirectory = textBox1.Text;
+
+            var notebookParser = new NotebookParser();
+            var writer = new MDWriter(outputDirectory, true);
+            var generator = new MDGenerator(notebookParser);
+            generator.GenerateNotebookMD(notebookName, writer);
         }
     }
 }

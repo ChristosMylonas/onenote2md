@@ -12,8 +12,9 @@ namespace Onenote2md.Core
     public class MDGenerator : IGenerator
     {
         #region Fields
+        private NotebookParser parser;
         private XNamespace ns;
-        private Microsoft.Office.Interop.OneNote.Application onenoteApp; 
+        private Microsoft.Office.Interop.OneNote.Application onenoteApp;
 
         static Dictionary<string, string> spanReplacements = new Dictionary<string, string>()
         {
@@ -23,9 +24,10 @@ namespace Onenote2md.Core
         #endregion
 
         #region Constructors
-        public MDGenerator(Microsoft.Office.Interop.OneNote.Application onenoteApp)
+        public MDGenerator(NotebookParser parser)
         {
-            this.onenoteApp = onenoteApp;
+            this.parser = parser;
+            this.onenoteApp = this.parser.GetOneNoteApp();
 
             string xml;
             onenoteApp.GetHierarchy(null, Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks, out xml);
@@ -104,6 +106,58 @@ namespace Onenote2md.Core
             writer.WritePage(md);
         }
 
+        public void GenerateSectionMD(string sectionName, IWriter writer)
+        {
+            var sectionId = parser.GetObjectId(
+                Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections, sectionName);
+
+            if (!String.IsNullOrEmpty(sectionId))
+            {
+                var pageIds = parser.GetChildObjectIds(
+                    sectionId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages);
+                writer.SetSubDirectories(new List<string>() { sectionName });
+                foreach (var pageId in pageIds)
+                {
+                    GenerateMD(pageId, writer);
+                }
+            }
+        }
+
+        public void GenerateNotebookMD(string notebookName, IWriter writer)
+        {
+            var notebookId = parser.GetObjectId(
+                Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks, notebookName);
+
+            if (!String.IsNullOrEmpty(notebookId))
+            {
+                // generate notebook pages.
+                var notebookPages = parser.GetChildObjectIds(
+                    notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages);
+                foreach (var pageId in notebookPages)
+                {
+                    GenerateMD(pageId, writer);
+                }
+
+                var notebookSections = parser.GetChildObjectMap(
+                    notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections);
+                foreach (var section in notebookSections)
+                {
+                    var pageIds = parser.GetChildObjectIds(
+                        section.Key, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages);
+
+                    writer.SetSubDirectories(new List<string>() { section.Value });
+
+                    foreach (var pageId in pageIds)
+                    {
+                        GenerateMD(pageId, writer);
+                    }
+                }
+            }
+        }
+
+
+
+
         protected MarkdownPage DoGenerateMD(string parentId, IWriter writer)
         {
             MarkdownPage markdownPage = new MarkdownPage();
@@ -151,7 +205,7 @@ namespace Onenote2md.Core
 
             markdownPage.Content = results.ToString();
             markdownPage.Title = context.GetPageTitle();
-            markdownPage.Filename = context.GetPageFilename();
+            markdownPage.Filename = context.GetPageFullPath();
 
             return markdownPage;
         }
@@ -448,7 +502,7 @@ namespace Onenote2md.Core
                     }
                 }
             }
-        } 
+        }
         #endregion
     }
 }

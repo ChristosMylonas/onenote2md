@@ -49,11 +49,12 @@
             this.button9 = new System.Windows.Forms.Button();
             this.mdPreviewBox = new System.Windows.Forms.TextBox();
             this.button10 = new System.Windows.Forms.Button();
-            this.button11 = new System.Windows.Forms.Button();
             this.button12 = new System.Windows.Forms.Button();
             this.button13 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.button14 = new System.Windows.Forms.Button();
+            this.button15 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -115,7 +116,7 @@
             this.logList.FormattingEnabled = true;
             this.logList.Location = new System.Drawing.Point(12, 280);
             this.logList.Name = "logList";
-            this.logList.Size = new System.Drawing.Size(671, 329);
+            this.logList.Size = new System.Drawing.Size(745, 329);
             this.logList.TabIndex = 6;
             // 
             // clearButton
@@ -234,10 +235,10 @@
             // 
             // mdPreviewBox
             // 
-            this.mdPreviewBox.Location = new System.Drawing.Point(689, 37);
+            this.mdPreviewBox.Location = new System.Drawing.Point(777, 37);
             this.mdPreviewBox.Multiline = true;
             this.mdPreviewBox.Name = "mdPreviewBox";
-            this.mdPreviewBox.Size = new System.Drawing.Size(532, 572);
+            this.mdPreviewBox.Size = new System.Drawing.Size(444, 572);
             this.mdPreviewBox.TabIndex = 20;
             // 
             // button10
@@ -250,18 +251,9 @@
             this.button10.UseVisualStyleBackColor = true;
             this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
-            // button11
-            // 
-            this.button11.Location = new System.Drawing.Point(570, 9);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(100, 23);
-            this.button11.TabIndex = 22;
-            this.button11.Text = "GenerateMd";
-            this.button11.UseVisualStyleBackColor = true;
-            // 
             // button12
             // 
-            this.button12.Location = new System.Drawing.Point(570, 39);
+            this.button12.Location = new System.Drawing.Point(535, 39);
             this.button12.Name = "button12";
             this.button12.Size = new System.Drawing.Size(100, 23);
             this.button12.TabIndex = 23;
@@ -271,7 +263,7 @@
             // 
             // button13
             // 
-            this.button13.Location = new System.Drawing.Point(570, 67);
+            this.button13.Location = new System.Drawing.Point(535, 68);
             this.button13.Name = "button13";
             this.button13.Size = new System.Drawing.Size(100, 23);
             this.button13.TabIndex = 24;
@@ -296,16 +288,37 @@
             this.label5.TabIndex = 26;
             this.label5.Text = "Out Directory:";
             // 
+            // button14
+            // 
+            this.button14.Location = new System.Drawing.Point(641, 41);
+            this.button14.Name = "button14";
+            this.button14.Size = new System.Drawing.Size(130, 23);
+            this.button14.TabIndex = 27;
+            this.button14.Text = "GenerateSectionMd";
+            this.button14.UseVisualStyleBackColor = true;
+            this.button14.Click += new System.EventHandler(this.button14_Click);
+            // 
+            // button15
+            // 
+            this.button15.Location = new System.Drawing.Point(641, 9);
+            this.button15.Name = "button15";
+            this.button15.Size = new System.Drawing.Size(130, 23);
+            this.button15.TabIndex = 28;
+            this.button15.Text = "GenerateNotebookMd";
+            this.button15.UseVisualStyleBackColor = true;
+            this.button15.Click += new System.EventHandler(this.button15_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1233, 624);
+            this.Controls.Add(this.button15);
+            this.Controls.Add(this.button14);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button13);
             this.Controls.Add(this.button12);
-            this.Controls.Add(this.button11);
             this.Controls.Add(this.button10);
             this.Controls.Add(this.mdPreviewBox);
             this.Controls.Add(this.button9);
@@ -357,11 +370,12 @@
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.TextBox mdPreviewBox;
         private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.Button button11;
         private System.Windows.Forms.Button button12;
         private System.Windows.Forms.Button button13;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button button14;
+        private System.Windows.Forms.Button button15;
     }
 }
 
