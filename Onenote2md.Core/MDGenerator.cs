@@ -119,14 +119,19 @@ namespace Onenote2md.Core
                     sectionId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
                     ObjectType.Page);
 
-                writer.PushDirectory(sectionName);
-
-                foreach (var pageId in pageIds)
+                try
                 {
-                    GeneratePageMD(pageId, writer);
-                }
+                    writer.PushDirectory(sectionName);
 
-                writer.PopDirectory();
+                    foreach (var pageId in pageIds)
+                    {
+                        GeneratePageMD(pageId, writer);
+                    }
+                }
+                finally
+                {
+                    writer.PopDirectory();
+                }
             }
         }
 
@@ -138,25 +143,28 @@ namespace Onenote2md.Core
                     sectionGroupId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
                     ObjectType.SectionGroup);
 
-                writer.PushDirectory(sectionGroupName);
-
-                foreach (var item in subSectionGroups)
+                try
                 {
-                    GenerateSectionGroupMD(item.Key, item.Value, writer);
+                    writer.PushDirectory(sectionGroupName);
+
+                    foreach (var item in subSectionGroups)
+                    {
+                        GenerateSectionGroupMD(item.Key, item.Value, writer);
+                    }
+
+                    var subSection = parser.GetChildObjectMap(
+                        sectionGroupId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
+                        ObjectType.Section);
+
+                    foreach (var section in subSection)
+                    {
+                        GenerateSectionMD(section.Key, section.Value, writer);
+                    }
                 }
-                
-
-
-                var subSection = parser.GetChildObjectMap(
-                    sectionGroupId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
-                    ObjectType.Section);
-
-                foreach (var section in subSection)
+                finally
                 {
-                    GenerateSectionMD(section.Key, section.Value, writer);
+                    writer.PopDirectory();
                 }
-
-                writer.PopDirectory();
             }
         }
 
@@ -171,7 +179,7 @@ namespace Onenote2md.Core
                 var subSectionGroups = parser.GetChildObjectMap(
                     notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
                     ObjectType.SectionGroup);
-                
+
                 foreach (var item in subSectionGroups)
                 {
                     GenerateSectionGroupMD(item.Key, item.Value, writer);
@@ -313,6 +321,7 @@ namespace Onenote2md.Core
             if (node != null)
             {
                 string name = NormalizeName(node.Name.ToString());
+                bool stdTraversal = true;
 
 
                 StringBuilder content = new StringBuilder();
@@ -396,6 +405,8 @@ namespace Onenote2md.Core
                         }
                         break;
 
+
+
                     case "Table":
                         {
                             if (context.HasPairedContent())
@@ -404,7 +415,21 @@ namespace Onenote2md.Core
                                 context.Reset();
                             }
 
+                            stdTraversal = false;
                             context.TableInfo.SetOnTable();
+                            results.Append(content);
+
+                            if (node.HasElements)
+                            {
+                                var subs = node.Elements().ToList();
+                                foreach (var item in subs)
+                                {
+                                    GenerateChildObjectMD(item, context, ++level, results);
+                                }
+                            }
+
+                            results.AppendLine();
+                            context.TableInfo.Reset();
                         }
                         break;
 
@@ -518,15 +543,17 @@ namespace Onenote2md.Core
                         break;
                 }
 
-                results.Append(content);
-
-
-                if (node.HasElements)
+                if (stdTraversal)
                 {
-                    var subs = node.Elements().ToList();
-                    foreach (var item in subs)
+                    results.Append(content);
+
+                    if (node.HasElements)
                     {
-                        GenerateChildObjectMD(item, context, ++level, results);
+                        var subs = node.Elements().ToList();
+                        foreach (var item in subs)
+                        {
+                            GenerateChildObjectMD(item, context, ++level, results);
+                        }
                     }
                 }
             }
