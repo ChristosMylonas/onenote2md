@@ -107,7 +107,9 @@ namespace Onenote2md.Shared
 
         public string GetPageFilename()
         {
-            return $"{pageTitle}.md";
+            var pageFilename = $"{pageTitle}.md";
+
+            return FileHelper.MakeValidFileName(pageFilename);
         }
 
         public void EnsureDirectoryExists(string dir)
@@ -121,15 +123,17 @@ namespace Onenote2md.Shared
             var outputDirectory = writer.GetOutputDirectory();
             EnsureDirectoryExists(outputDirectory);
 
-            return Path.Combine(outputDirectory, GetPageFilename());
+            var fullPath = Path.Combine(outputDirectory, GetPageFilename());
+            return fullPath;
         }
 
         public string GetPageImageFullPath()
         {
             var outputDirectory = writer.GetOutputDirectory();
             EnsureDirectoryExists(outputDirectory);
+            var filename = ImageDef.GetFilename(pageTitle);
 
-            return Path.Combine(outputDirectory, ImageDef.GetFilename(pageTitle));
+            return Path.Combine(outputDirectory, FileHelper.MakeValidFileName(filename));
         }
 
 

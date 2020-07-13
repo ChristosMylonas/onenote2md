@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColumnDef.cs" />
+    <Compile Include="FileHelper.cs" />
     <Compile Include="IWriter.cs" />
     <Compile Include="IGenerator.cs" />
     <Compile Include="MarkdownContent.cs" />

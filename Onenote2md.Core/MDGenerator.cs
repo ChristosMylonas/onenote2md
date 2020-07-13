@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Xml.Linq;
 
 namespace Onenote2md.Core
@@ -492,6 +493,7 @@ namespace Onenote2md.Core
                             var altText = context.GetPageImageFilename();
                             var contentFullPath = $"file://{fullPath}";
                             contentFullPath = contentFullPath.Replace(@"\", @"/");
+                            contentFullPath = HttpUtility.UrlPathEncode(contentFullPath);
 
                             var image = $"![{altText}]({contentFullPath})";
                             //Lwn![test_2.](file://c:/Storage/Repositories/OneGitNote/Tester/aa/test_2.png)

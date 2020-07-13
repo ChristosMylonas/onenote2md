@@ -43,7 +43,7 @@ namespace Onenote2md.Core
             {
                 var paths = new List<string>() { rootOutputDirectory };
                 paths.AddRange(subDirectories.Reverse());
-                return Path.Combine(paths.ToArray());
+                return Path.Combine(paths.ToArray());                
             }
         }
 
