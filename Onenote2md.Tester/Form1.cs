@@ -250,8 +250,14 @@ namespace Onenote2md.Core.Tester
 
             var notebookParser = new NotebookParser();
             var writer = new MDWriter(outputDirectory, true);
-            var generator = new MDGenerator(notebookParser);
-            generator.GenerateNotebookMD(notebookName, writer);
+            var generator = new MDGeneratorWorker(notebookParser, notebookName, writer);
+            generator.RunWorkerCompleted += Generator_RunWorkerCompleted;
+            generator.RunWorkerAsync();
+        }
+
+        private void Generator_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Log("Completed");
         }
     }
 }

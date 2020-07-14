@@ -48,6 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MDGenerator.cs" />
+    <Compile Include="MDGeneratorWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MDWriter.cs" />
     <Compile Include="NotebookParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
