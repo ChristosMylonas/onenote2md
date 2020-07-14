@@ -227,7 +227,7 @@ namespace Onenote2md.Core
             {
                 mdContent.Append(childenContent);
             }
-                
+
 
             markdownPage.Content = mdContent.ToString();
             markdownPage.Title = context.GetPageTitle();
@@ -471,8 +471,23 @@ namespace Onenote2md.Core
                                     content.Append("|");
                                 }
 
+                                stdTraversal = false;
+
                                 content.AppendLine();
                                 context.TableInfo.AppendRow();
+
+                                results.Append(content);
+
+                                if (node.HasElements)
+                                {
+                                    var subs = node.Elements().ToList();
+                                    foreach (var item in subs)
+                                    {
+                                        GenerateChildObjectMD(item, context, ++level, results);
+                                    }
+                                }
+
+                                results.Append(" |");
                             }
                             else
                             {
