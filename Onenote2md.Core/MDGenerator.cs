@@ -203,7 +203,7 @@ namespace Onenote2md.Core
             var scope = Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren;
             var doc = parser.GetXDocument(parentId, scope);
 
-            StringBuilder results = new StringBuilder();
+            StringBuilder mdContent = new StringBuilder();
 
             // create context
             var quickStyles = GetQuickStyleDef(doc);
@@ -213,13 +213,34 @@ namespace Onenote2md.Core
             context.SetPageTitle(pageTitle);
 
             var titleElement = GetTitleElement(doc);
-            GenerateChildObjectMD(titleElement, context, 0, results);
+            GenerateChildObjectMD(titleElement, context, 0, mdContent);
 
 
-            var nodeName = "OEChildren";
+            var childenContent = DoGenerateMDRoots("OEChildren", doc, context);
+            if (String.IsNullOrWhiteSpace(childenContent))
+            {
+                var directImageContent = DoGenerateMDRoots("Image", doc, context);
+                if (!String.IsNullOrWhiteSpace(directImageContent))
+                    mdContent.Append(directImageContent);
+            }
+            else
+            {
+                mdContent.Append(childenContent);
+            }
+                
 
+            markdownPage.Content = mdContent.ToString();
+            markdownPage.Title = context.GetPageTitle();
+            markdownPage.Filename = context.GetPageFullPath();
 
-            var children = doc.Descendants(ns + nodeName).FirstOrDefault();
+            return markdownPage;
+        }
+
+        protected string DoGenerateMDRoots(string rootNodeName, XDocument doc, MarkdownGeneratorContext context)
+        {
+            var result = new StringBuilder();
+
+            var children = doc.Descendants(ns + rootNodeName).FirstOrDefault();
             if (children != null && children.HasElements)
             {
                 var rootElements = children
@@ -228,21 +249,17 @@ namespace Onenote2md.Core
                 foreach (var rootElement in rootElements)
                 {
                     int level = 0;
-                    GenerateChildObjectMD(rootElement, context, level, results);
+                    GenerateChildObjectMD(rootElement, context, level, result);
                 }
 
                 if (context.HasPairedContent())
                 {
-                    results.Append(context.Get().Content);
+                    result.Append(context.Get().Content);
                     context.Reset();
                 }
             }
 
-            markdownPage.Content = results.ToString();
-            markdownPage.Title = context.GetPageTitle();
-            markdownPage.Filename = context.GetPageFullPath();
-
-            return markdownPage;
+            return result.ToString();
         }
         #endregion
 
@@ -510,6 +527,8 @@ namespace Onenote2md.Core
                             string stringValue;
                             onenoteApp.GetBinaryPageContent(context.ParentId, id, out stringValue);
 
+                            if (!context.ImageDef.IsWithinImage())
+                                context.ImageDef.SetWithinImage("png");
 
                             var fullPath = context.GetPageImageFullPath();
                             var bytes = Convert.FromBase64String(stringValue);
