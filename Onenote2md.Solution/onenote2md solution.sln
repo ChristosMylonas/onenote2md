@@ -7,7 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		..\Doc\Objects.docx = ..\Doc\Objects.docx
 		..\README.md = ..\README.md
-		..\Doc\samplepage.xml = ..\Doc\samplepage.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{252C0372-F35E-4F5F-8A5D-EF7EBB9FBEE4}"
