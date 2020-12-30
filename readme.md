@@ -145,6 +145,9 @@ alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 ## Tag
 - Converted using emojis such as :+1:
 
+# Roadmap
+- Support handwriting, drawing etc as image export.
+
 # Resources
 ## OneNote
 - https://docs.microsoft.com/en-us/office/client-developer/onenote/onenote-home
