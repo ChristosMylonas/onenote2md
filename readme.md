@@ -145,6 +145,11 @@ alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 ## Tag
 - Converted using emojis such as :+1:
 
+## Attachments
+- Linked in place, and displayed where md viewer is capable of displaying files in place
+
+[example-attachment.pdf](Doc/example-attachment.pdf)
+
 # Roadmap
 - Support handwriting, drawing etc as image export.
 
