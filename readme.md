@@ -145,6 +145,11 @@ alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 ## Tag
 - Converted using emojis such as :+1:
 
+## Inserted File
+- Linked in place, and displayed where md viewer is capable of displaying files in place
+
+![pdf displayed inline](Doc/images/pdf_displayed_inline.jpg)
+
 # Roadmap
 - Support handwriting, drawing etc as image export.
 

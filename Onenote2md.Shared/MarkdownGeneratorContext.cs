@@ -127,7 +127,16 @@ namespace Onenote2md.Shared
             return fullPath;
         }
 
-        public string GetPageImageFullPath()
+        public string GetInsertedFilePath(string fileName)
+        {
+            var outputDirectory = writer.GetOutputDirectory();
+            EnsureDirectoryExists(outputDirectory);
+
+            var fullPath = Path.Combine(outputDirectory, fileName);
+            return fullPath;
+        }
+
+            public string GetPageImageFullPath()
         {
             var outputDirectory = writer.GetOutputDirectory();
             EnsureDirectoryExists(outputDirectory);

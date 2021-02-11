@@ -1,6 +1,7 @@
 ﻿using Onenote2md.Shared;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -570,6 +571,24 @@ namespace Onenote2md.Core
                         }
                         break;
 
+                    case "InsertedFile":
+                        {
+                            var oldPathAndName = GetAttibuteValue(node, "pathCache");
+                            var newName = GetAttibuteValue(node, "preferredName");
+                            var fullPath = context.GetInsertedFilePath(newName);
+
+                            File.Copy(oldPathAndName, fullPath);
+
+                            var altText = newName;
+                            var contentFullPath = $"file://{fullPath}";
+                            contentFullPath = contentFullPath.Replace(@"\", @"/");
+                            contentFullPath = HttpUtility.UrlPathEncode(contentFullPath);
+
+                            var insertedFile = $"![{altText}]({contentFullPath})";
+
+                            content.Append(insertedFile);
+                        }
+                        break;
 
 
 
