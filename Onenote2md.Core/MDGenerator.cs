@@ -577,7 +577,9 @@ namespace Onenote2md.Core
                             var newName = GetAttibuteValue(node, "preferredName");
                             var fullPath = context.GetInsertedFilePath(newName);
 
-                            File.Copy(oldPathAndName, fullPath);
+
+                            if (!File.Exists(fullPath))
+                                File.Copy(oldPathAndName, fullPath);
 
                             var altText = newName;
                             var contentFullPath = $"file://{fullPath}";
