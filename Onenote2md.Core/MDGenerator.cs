@@ -584,7 +584,7 @@ namespace Onenote2md.Core
                             contentFullPath = contentFullPath.Replace(@"\", @"/");
                             contentFullPath = HttpUtility.UrlPathEncode(contentFullPath);
 
-                            var insertedFile = $"![{altText}]({contentFullPath})";
+                            var insertedFile = $"[{altText}]({contentFullPath})";
 
                             content.Append(insertedFile);
                         }
