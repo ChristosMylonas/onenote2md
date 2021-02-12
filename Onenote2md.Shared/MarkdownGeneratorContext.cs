@@ -133,6 +133,14 @@ namespace Onenote2md.Shared
             EnsureDirectoryExists(outputDirectory);
 
             var fullPath = Path.Combine(outputDirectory, fileName);
+            var fileCount = 0;
+            var newFileName = "";
+            while (File.Exists(fullPath))
+            {
+                fileCount++;
+                newFileName = Path.GetFileNameWithoutExtension(fileName) + "_" + fileCount + Path.GetExtension(fullPath);
+                fullPath = Path.Combine(outputDirectory, newFileName);
+            }
             return fullPath;
         }
 
