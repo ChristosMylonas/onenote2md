@@ -550,13 +550,9 @@ namespace Onenote2md.Core
                             var bytes = Convert.FromBase64String(stringValue);
                             context.Writer.WritePageImage(fullPath, bytes);
 
-                            var altText = context.GetPageImageFilename();
-                            var contentFullPath = $"file://{fullPath}";
-                            contentFullPath = contentFullPath.Replace(@"\", @"/");
-                            contentFullPath = HttpUtility.UrlPathEncode(contentFullPath);
-
-                            var image = $"![{altText}]({contentFullPath})";
-                            //Lwn![test_2.](file://c:/Storage/Repositories/OneGitNote/Tester/aa/test_2.png)
+                            var imageFilename = context.GetPageImageFilename();
+                            var contentRelativePath = $"file://{imageFilename}";
+                            var image = $"![{imageFilename}]({contentRelativePath})";
 
                             content.Append(image);
                             context.ImageDef.Reset();
