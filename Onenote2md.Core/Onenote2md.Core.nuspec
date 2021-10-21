@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/weissm/onenote2md</projectUrl>
+    <iconUrl>https://cdn4.iconfinder.com/data/icons/logos-and-brands-2/471/205_Markdown_logo_logos-1024.png</iconUrl>
+    <description>$description$</description>
+    <releaseNotes>Packet developmed originally by ChristosMylonas prepared for nuget </releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags>OneNote MD</tags>
+  </metadata>
+</package>
