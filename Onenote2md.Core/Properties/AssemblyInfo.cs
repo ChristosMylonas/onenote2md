@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("OneNoteParser")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Onenote2md.Core")]
+[assembly: AssemblyDescription("Convert OneNote notebooks to markdown files.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("OneNoteParser")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyProduct("Onenote2md")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
