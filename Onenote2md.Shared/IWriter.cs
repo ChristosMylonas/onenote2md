@@ -8,10 +8,9 @@ namespace Onenote2md.Shared
 {
     public interface IWriter
     {
+        string RootOutputDirectory { get; }
+
         void WritePage(MarkdownPage page);
         void WritePageImage(string fullPath, byte[] image);
-        void PushDirectory(string dir);
-        void PopDirectory();
-        string GetOutputDirectory();
     }
 }

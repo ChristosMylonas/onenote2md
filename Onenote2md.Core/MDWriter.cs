@@ -10,13 +10,14 @@ namespace Onenote2md.Core
 {
     public class MDWriter : IWriter
     {
-        string rootOutputDirectory;
         bool overwrite;
         Stack<string> subDirectories;
 
+        public string RootOutputDirectory { get; private set; }
+
         public MDWriter(string rootOutputDirectory, bool overwrite)
         {
-            this.rootOutputDirectory = rootOutputDirectory;
+            this.RootOutputDirectory = rootOutputDirectory;
             this.overwrite = overwrite;
 
             if (!Directory.Exists(rootOutputDirectory))
@@ -27,7 +28,8 @@ namespace Onenote2md.Core
 
         public void PushDirectory(string dir)
         {
-            subDirectories.Push(dir);
+            string filteredDir = FileHelper.MakeValidFileName(dir);
+            subDirectories.Push(filteredDir);
         }
 
         public void PopDirectory()
@@ -38,10 +40,10 @@ namespace Onenote2md.Core
         public string GetOutputDirectory()
         {
             if (!subDirectories.Any())
-                return rootOutputDirectory;
+                return RootOutputDirectory;
             else
             {
-                var paths = new List<string>() { rootOutputDirectory };
+                var paths = new List<string>() { RootOutputDirectory };
                 paths.AddRange(subDirectories.Reverse());
                 return Path.Combine(paths.ToArray());                
             }
@@ -54,6 +56,7 @@ namespace Onenote2md.Core
 
         public void WritePageImage(string fullPath, byte[] image)
         {
+            this.EnsureDirectoryExists(fullPath);
             using (var imageFile = new FileStream(fullPath, FileMode.Create))
             {
                 imageFile.Write(image, 0, image.Length);
@@ -61,15 +64,10 @@ namespace Onenote2md.Core
             }
         }
 
-        //protected string BuildFullPath(string pageFilename)
-        //{
-        //    return Path.Combine(outputDirectory, pageFilename);
-        //}
-
         protected void WriteFile(MarkdownPage page)
         {
-            //string fullPath = BuildFullPath(page.Filename);
             string fullPath = page.Filename;
+            this.EnsureDirectoryExists(fullPath);
 
             if (File.Exists(fullPath))
             {
@@ -84,6 +82,17 @@ namespace Onenote2md.Core
                     writer.Write(page.Content);
                 }
             }
+        }
+
+        private void EnsureDirectoryExists(string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                throw new ArgumentNullException(nameof(filePath));
+            }
+
+            string dir = Path.GetDirectoryName(filePath);
+            Directory.CreateDirectory(dir);
         }
     }
 }

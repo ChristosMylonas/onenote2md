@@ -1,4 +1,5 @@
 ﻿using Onenote2md.Shared;
+using Onenote2md.Shared.OneNoteObjectModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,30 +11,26 @@ namespace Onenote2md.Core
 {
     public class MDGeneratorWorker : BackgroundWorker
     {
-        MDGenerator generator;
+        private readonly INotebookGenerator notebookGenerator;
+        private readonly Notebook notebook;
+        private readonly IWriter writer;
 
-        NotebookParser parser;
-        string notebookName;
-        IWriter writer;
-
-        public MDGeneratorWorker(NotebookParser parser, string notebookName, IWriter writer)
+        public MDGeneratorWorker(INotebookGenerator notebookGenerator, Notebook notebook, IWriter writer)
         {
-            this.parser = parser;
-            this.notebookName = notebookName;
+            this.notebookGenerator = notebookGenerator;
+            this.notebook = notebook;
             this.writer = writer;
 
             this.DoWork += MDGeneratorWorker_DoWork;
-            generator = new MDGenerator(parser);
         }
 
         private void MDGeneratorWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             if (!e.Cancel)
             {
-                generator.GenerateNotebookMD(notebookName, writer);
+                this.notebookGenerator.GenerateNotebookMD(this.notebook, writer);
                 e.Result = true;
             }
-
         }
     }
 }

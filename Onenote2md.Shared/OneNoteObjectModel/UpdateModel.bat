@@ -1,0 +1,1 @@
+xsd .\onenote.xsd /classes /namespace:Onenote2md.Shared.OneNoteObjectModel

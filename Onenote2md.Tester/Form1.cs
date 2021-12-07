@@ -1,4 +1,5 @@
-﻿using Onenote2md.Shared;
+﻿using Onenote2md.Shared.OneNoteObjectModel;
+using Onenote2md.Shared;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,26 +14,29 @@ namespace Onenote2md.Core.Tester
 {
     public partial class Form1 : Form
     {
+        private readonly OneNoteApplication oneNoteApp = OneNoteApplication.Instance;
+
         public Form1()
         {
             InitializeComponent();
+
+            this.notebookBox.Text = "Study";
+            this.sectionBox.Text = "IT";
+            this.pageBox.Text = "Singleton";
+            this.objectBox.Text = "{CB2F744C-FE13-4700-B9BF-04BE84F4E953}{31}{B0}";
+            this.txtOutDir.Text = @"D:\oss\onenote2md\Onenote2md.Cmd\bin\Debug\net6.0-windows";
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void BtnGetSections_Click(object sender, EventArgs e)
         {
-            var notebookParser = new NotebookParser();
-            var notebookId = notebookParser.GetObjectId(
-                Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks, notebookBox.Text);
-
-            if (String.IsNullOrEmpty(notebookId))
-                Log("Unknown notebook");
+            Notebook notebook = this.oneNoteApp.GetNotebook(notebookBox.Text);
+            if (notebook == null)
+                Log("Unknown notebook or not opened");
             else
             {
-                var names = notebookParser.GetChildObjectNames(notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections);
-                
-                Log(names);
+                var sectionNames = this.oneNoteApp.GetSections(notebook).Select(s => s.name).ToList();                
+                Log(sectionNames);
             }
-
         }
 
         private void clearButton_Click(object sender, EventArgs e)
@@ -42,67 +46,57 @@ namespace Onenote2md.Core.Tester
 
         private void Log(string msg)
         {
-            logList.Items.Add(msg);
+            logList.Items.Add(msg.Trim());
         }
 
         private void Log(List<string> msgs)
         {
             foreach (var item in msgs)
             {
-                logList.Items.Add(item);
+                logList.Items.Add(item.Trim());
             }
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void BtnGetPages_Click(object sender, EventArgs e)
         {
-            var notebookParser = new NotebookParser();
-            var sectionId = notebookParser.GetObjectId(
-                Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections, sectionBox.Text);
-
-            if (String.IsNullOrEmpty(sectionId))
+            Notebook notebook = this.oneNoteApp.GetNotebook(this.notebookBox.Text);
+            Section section = this.oneNoteApp.GetSection(notebook, sectionBox.Text);
+            if (section == null)
                 Log("Unknown section");
             else
             {
-                var names = notebookParser.GetChildObjectNames(sectionId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages);
+                var names = section.Page.Select(p => p.name).ToList();
                 Log(names);
             }
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void BtnCopy_Click(object sender, EventArgs e)
         {
             if (logList.SelectedItem != null)
                 Clipboard.SetText(logList.SelectedItem.ToString());
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void BtnGetChildObjectIDs_Click(object sender, EventArgs e)
         {
-            var notebookParser = new NotebookParser();
-            var pageId = notebookParser.GetObjectId(
-                Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, pageBox.Text);
-
-            if (String.IsNullOrEmpty(pageId))
+            Page page = this.oneNoteApp.GetObject<Page>(null, pageBox.Text);
+            if (page == null)
                 Log("Unknown page");
             else
             {
-                var children = notebookParser.GetChildObjectIDs(pageId);
+                Page pageDetails = this.oneNoteApp.GetPage(page.ID);
+                var children = pageDetails.Items.Select(i => i.objectID).ToList();
                 Log(children);
             }
-
         }
 
-        private void button5_Click(object sender, EventArgs e)
+        private void BtnGetObject_Click(object sender, EventArgs e)
         {
-            var notebookParser = new NotebookParser();
-            var pageId = notebookParser.GetObjectId(
-                Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, pageBox.Text);
-
-            if (String.IsNullOrEmpty(pageId))
+            Page page = this.oneNoteApp.GetObject<Page>(null, pageBox.Text);
+            if (page == null)
                 Log("Unknown page");
             else
             {
-                var objectResult = notebookParser.GetChildObjectID(
-                    pageId, objectBox.Text);
-
+                var objectResult = this.oneNoteApp.GetPage(page.ID).Items.FirstOrDefault(i => string.Compare(i.objectID, objectBox.Text, StringComparison.InvariantCultureIgnoreCase) == 0)?.ToString();
                 if (String.IsNullOrEmpty(objectResult))
                     Log("Unknown object");
                 else
@@ -115,37 +109,29 @@ namespace Onenote2md.Core.Tester
 
         private void button6_Click(object sender, EventArgs e)
         {
-            var notebookParser = new NotebookParser();
-            var pageId = notebookParser.GetObjectId(
-                Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, pageBox.Text);
-
-            if (String.IsNullOrEmpty(pageId))
+            Page page = this.oneNoteApp.GetObject<Page>(null, pageBox.Text);
+            if (page == null)
                 Log("Unknown page");
             else
             {
-                var children = notebookParser.LogChildObjects(pageId);
+                var children = this.oneNoteApp.LogChildObjects(page.ID);
                 Log(children);
             }
         }
 
-        private void button7_Click(object sender, EventArgs e)
+        private void BtnGetPageContent_Click(object sender, EventArgs e)
         {
-            var notebookParser = new NotebookParser();
-            var sectionId = notebookParser.GetObjectId(
-                Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections, sectionBox.Text);
-
-            if (String.IsNullOrEmpty(sectionId))
+            Section section = this.oneNoteApp.GetSection(sectionBox.Text);
+            if (section == null)
                 Log("Unknown section");
             else
             {
-                var pageId = notebookParser.GetObjectId(
-                    Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, pageBox.Text);
-
-                if (String.IsNullOrEmpty(pageId))
+                Page page = this.oneNoteApp.GetObject<Page>(null, pageBox.Text);
+                if (page == null)
                     Log("Unknown page");
                 else
                 {
-                    var content = notebookParser.GetPageContent(sectionId, pageId);
+                    var content = this.oneNoteApp.GetPageXml(page.ID);
                     Log(content);
                 }
             }
@@ -158,99 +144,66 @@ namespace Onenote2md.Core.Tester
 
         private void button9_Click(object sender, EventArgs e)
         {
-            var notebookParser = new NotebookParser();
-            var pageId = notebookParser.GetObjectId(
-                Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, pageBox.Text);
-
-            if (String.IsNullOrEmpty(pageId))
+            Page page = this.oneNoteApp.GetObject<Page>(null, pageBox.Text);
+            if (page == null)
                 Log("Unknown page");
             else
             {
-                var generator = new MDGenerator(notebookParser);
-                var md = generator.PreviewMD(pageId);
+                var generator = new MDGenerator(this.oneNoteApp);
+                var md = generator.PreviewMD(page);
                 mdPreviewBox.AppendText(md.Content);
             }
         }
 
-        private void button10_Click(object sender, EventArgs e)
+        private void BtnCloseNotebook_Click(object sender, EventArgs e)
         {
-            var notebookParser = new NotebookParser();
-            var notebookId = notebookParser.GetObjectId(
-                Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks, notebookBox.Text);
-
-            if (String.IsNullOrEmpty(notebookId))
-                Log("Unknown notebook");
-            else
+            Notebook notebook = this.oneNoteApp.GetNotebook(notebookBox.Text);
+            if (notebook == null)
             {
-                notebookParser.Close(notebookId);
+                Log("Unknown notebook or not opened");
             }
+
+            this.oneNoteApp.CloseNotebook(notebook.ID);
         }
 
-        private void button13_Click(object sender, EventArgs e)
+        private void BtnGeneratePageMd_Click(object sender, EventArgs e)
         {
-            var outputDirectory = textBox1.Text;
+            var outputDirectory = txtOutDir.Text;
             var writer = new MDWriter(outputDirectory, true);
-
-            var notebookParser = new NotebookParser();
-            var pageId = notebookParser.GetObjectId(
-                Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, pageBox.Text);
-
-            if (String.IsNullOrEmpty(pageId))
+            Page page = this.oneNoteApp.GetObject<Page>(null, pageBox.Text);
+            if (page == null)
                 Log("Unknown page");
             else
             {
-                var generator = new MDGenerator(notebookParser);
-                generator.GeneratePageMD(pageId, writer);
+                var generator = new MDGenerator(this.oneNoteApp);
+                generator.GeneratePageMD(page, writer);
             }
         }
 
-        private void button12_Click(object sender, EventArgs e)
+        private void BtnGenerateSectionMd_Click(object sender, EventArgs e)
         {
             var sectionName = sectionBox.Text;
-            var outputDirectory = textBox1.Text;
-
-            var notebookParser = new NotebookParser();
-
-            var sectionId = notebookParser.GetObjectId(
-                Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections, sectionName);
-
-            if (String.IsNullOrEmpty(sectionId))
+            var outputDirectory = txtOutDir.Text;
+            Section section = this.oneNoteApp.GetSection(sectionName);
+            if (section == null)
                 Log("Unknown section");
             else
             {
                 var writer = new MDWriter(outputDirectory, true);
-                var pageIds = notebookParser.GetChildObjectIds(
-                    sectionId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
-                    ObjectType.Page);
-
-                foreach (var pageId in pageIds)
-                {
-                    var generator = new MDGenerator(notebookParser);
-
-                    generator.GeneratePageMD(pageId, writer);
-                }
+                INotebookGenerator notebookGenerator = new NotebookParser(this.oneNoteApp, new MDGenerator(this.oneNoteApp));
+                notebookGenerator.GenerateSectionMD(section, writer);
             }
         }
 
-        private void button14_Click(object sender, EventArgs e)
+        private void BtnGenerateNotebookMd_Click(object sender, EventArgs e)
         {
-            var sectionName = sectionBox.Text;
-            var outputDirectory = textBox1.Text;
+            var notebookName = notebookBox.Text.Trim();
+            var outputDirectory = txtOutDir.Text.Trim();
 
-            var notebookParser = new NotebookParser();
+            INotebookGenerator notebookParser = new NotebookParser(this.oneNoteApp, new MDGenerator(this.oneNoteApp));
             var writer = new MDWriter(outputDirectory, true);
-            var generator = new MDGenerator(notebookParser);
-            generator.GenerateSectionMD(sectionName, writer);
-        }
-
-        private void button15_Click(object sender, EventArgs e)
-        {
-            var notebookName = notebookBox.Text;
-            var outputDirectory = textBox1.Text;
-
-            var notebookParser = new NotebookParser();
-            var writer = new MDWriter(outputDirectory, true);
-            var generator = new MDGeneratorWorker(notebookParser, notebookName, writer);
+            Notebook notebook = this.oneNoteApp.GetNotebook(notebookName);
+            var generator = new MDGeneratorWorker(notebookParser, notebook, writer);
             generator.RunWorkerCompleted += Generator_RunWorkerCompleted;
             generator.RunWorkerAsync();
         }
