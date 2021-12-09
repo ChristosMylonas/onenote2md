@@ -49,27 +49,6 @@ namespace Onenote2md.Shared
                 return tagDefs[key];
             else
                 return null;
-        }     
-
-        public string GetPageFullPath()
-        {
-            var fullPath = Path.Combine(this.Writer.RootOutputDirectory, this.Page.MarkdownRelativePath);
-            return fullPath;
-        }
-
-        public string GetAttachmentPath(string preferredFileName)
-        {
-            var mdPath = Path.Combine(this.Writer.RootOutputDirectory, this.Page.MarkdownRelativePath);
-            var outputDirectory = Path.GetDirectoryName(mdPath);
-            var fullPath = Path.Combine(outputDirectory, preferredFileName);
-            var fileCount = 0;
-            while (File.Exists(fullPath))
-            {
-                fileCount++;
-                string newFileName = Path.GetFileNameWithoutExtension(preferredFileName) + "_" + fileCount + Path.GetExtension(fullPath);
-                fullPath = Path.Combine(outputDirectory, newFileName);
-            }
-            return fullPath;
         }
 
         public IWriter Writer { get; private set; }

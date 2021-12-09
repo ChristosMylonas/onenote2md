@@ -2,6 +2,7 @@
 using Onenote2md.Shared;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace Onenote2md.Cmd
                     case 2:
                         {
                             notebookName = args[0];
-                            outputDirectory = args[1];
+                            outputDirectory = Path.GetFullPath(args[1]);
                         }
                         break;
 
@@ -45,8 +46,15 @@ namespace Onenote2md.Cmd
                     return -2;
                 }
 
-                INotebookGenerator notebookParser = new NotebookParser(oneNoteApp, new MDGenerator(oneNoteApp));
-                var writer = new MDWriter(outputDirectory, true);
+                MDGeneratorOptions options = new()
+                {
+                    RootOutputDirectory = outputDirectory,
+                    AttachmentLocation = AttachmentLocation.SubDir,
+                    AttachmentSubDir = "assets",
+                    Overwrite = true,
+                };
+                INotebookGenerator notebookParser = new NotebookParser(oneNoteApp, new MDGenerator(oneNoteApp, options));
+                var writer = new MDWriter(options);
                 notebookParser.GenerateNotebookMD(notebook, writer);
                 return 0;
             }

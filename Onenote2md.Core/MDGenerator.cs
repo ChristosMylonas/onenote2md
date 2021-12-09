@@ -17,12 +17,19 @@
         private const string MathMLStart = "<!--[if mathML]>";
         private const string MathMLEnd = "<![endif]-->";
         private readonly OneNoteApplication oneNoteApp;
+        private readonly MDGeneratorOptions options;
         #endregion
 
         #region Constructors
         public MDGenerator(OneNoteApplication oneNoteApplication)
+            : this(oneNoteApplication, new MDGeneratorOptions())
+        {
+        }
+
+        public MDGenerator(OneNoteApplication oneNoteApplication, MDGeneratorOptions options)
         {
             this.oneNoteApp = oneNoteApplication;
+            this.options = options;
         }
         #endregion
 
@@ -31,7 +38,11 @@
         #region IPageGenerator
         public MarkdownPage PreviewMD(Page page)
         {
-            MDWriter tempWriter = new MDWriter(@"c:\temp\onenote2md", true);
+            MDGeneratorOptions options = new MDGeneratorOptions()
+            {
+                RootOutputDirectory = @"c:\temp\onenote2md",
+            };
+            MDWriter tempWriter = new MDWriter(options);
             return DoGenerateMD(page, tempWriter);
         }
 
@@ -97,7 +108,7 @@
             {
                 Content = mdContent.ToString(),
                 Title = context.PageTitle,
-                Filename = context.GetPageFullPath()
+                Filename = context.Writer.GetPageFullPath(page),
             };
             return markdownPage;
         }
@@ -300,8 +311,8 @@
             }
 
             byte[] bytes = null;
-            string fullPath = context.GetAttachmentPath(Path.GetFileNameWithoutExtension(context.Page.MarkdownFileName) + "." + image.format);
-            Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+            string preferredFileName = Path.GetFileNameWithoutExtension(context.Page.MarkdownFileName) + "." + image.format;
+            string link = string.Empty;
             if (image.Item is CallbackID callbackID)
             {
                 string stringValue = oneNoteApp.GetBinaryPageContent(context.Page.ID, callbackID.callbackID);
@@ -313,19 +324,19 @@
             }
             else if (image.Item is FilePath filePath)
             {
-                if (File.Exists(filePath.path))
-                {
-                    File.Copy(filePath.path, fullPath);
-                }
+                link = context.Writer.CopyAttachment(context.Page, filePath.path);
+            }
+            else
+            {
+                // Should never come here
             }
 
             if (bytes != null)
             {
-                context.Writer.WritePageImage(fullPath, bytes);
+                link = context.Writer.WriteAttachment(context.Page, preferredFileName, bytes);
             }
 
-            var imageFilename = Path.GetFileName(fullPath);
-            var imageMarkdown = $"![{imageFilename}]({imageFilename.Replace(" ", "%20")})";
+            var imageMarkdown = $"![{preferredFileName}]({MDGenerator.EncodeMarkdownLink(link)})";
             return imageMarkdown;
         }
 
@@ -337,15 +348,8 @@
                 oldPathAndName = file.pathSource;
             }
 
-            string targetPath = context.GetAttachmentPath(file.preferredName);
-            Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
-            if (File.Exists(oldPathAndName))
-            {
-                File.Copy(oldPathAndName, targetPath);
-            }
-
-            string actualFileName = Path.GetFileName(targetPath);
-            string markdown = $"[{actualFileName}]({actualFileName.Replace(" ", "%20")})";
+            string link = context.Writer.CopyAttachment(context.Page, oldPathAndName, file.preferredName);
+            string markdown = $"[{file.preferredName}]({MDGenerator.EncodeMarkdownLink(link)})";
             return markdown;
         }
 
@@ -579,7 +583,7 @@
                             if (linkResolver != null)
                             {
                                 link = linkResolver.ResolvePageLink(link, context.Page.MarkdownRelativePath);
-                                link = link.Replace(" ", "%20");
+                                link = MDGenerator.EncodeMarkdownLink(link);
                             }
 
                             markdown.Append("](" + link + ")");
@@ -812,6 +816,23 @@
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Markdown has some limit with link path. We could simply UrlEncode the full path, but it
+        /// made the unicode characters unreadable. For example "测试" becomes "%e6%b5%8b%e8%af%95".
+        /// So a simpler encoder is used here.
+        /// </summary>
+        /// <param name="linkPath"></param>
+        /// <returns></returns>
+        private static string EncodeMarkdownLink(string linkPath)
+        {
+            if (string.IsNullOrEmpty(linkPath))
+            {
+                return string.Empty;
+            }
+
+            return linkPath.Replace(" ", "%20").Replace('\\', '/');
         }
 
         private class HtmlToken
