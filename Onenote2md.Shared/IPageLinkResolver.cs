@@ -1,5 +1,7 @@
 ﻿namespace Onenote2md.Shared
 {
+    using Onenote2md.Shared.OneNoteObjectModel;
+
     public interface IPageLinkResolver
     {
         /// <summary>
@@ -12,6 +14,6 @@
         /// <param name="href"></param>
         /// <param name="relativeTo"></param>
         /// <returns></returns>
-        string ResolvePageLink(string href, string relativeTo);
+        string ResolvePageLink(string href, Page relativeTo);
     }
 }

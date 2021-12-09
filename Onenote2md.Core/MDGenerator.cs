@@ -582,7 +582,7 @@
                             string link = beginToken.href;
                             if (linkResolver != null)
                             {
-                                link = linkResolver.ResolvePageLink(link, context.Page.MarkdownRelativePath);
+                                link = linkResolver.ResolvePageLink(link, context.Page);
                                 link = MDGenerator.EncodeMarkdownLink(link);
                             }
 
