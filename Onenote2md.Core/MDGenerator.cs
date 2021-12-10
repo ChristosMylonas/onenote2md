@@ -1,613 +1,886 @@
-﻿using Onenote2md.Shared;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Web;
-using System.Xml.Linq;
-
-namespace Onenote2md.Core
+﻿namespace Onenote2md.Core
 {
-    public class MDGenerator : IGenerator
+    using Onenote2md.Shared;
+    using Onenote2md.Shared.OneNoteObjectModel;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Web;
+    using System.Xml.Linq;
+
+    public class MDGenerator : IPageGenerator
     {
         #region Fields
-        private NotebookParser parser;
-        private XNamespace ns;
-        private Microsoft.Office.Interop.OneNote.Application onenoteApp;
-
-        static Dictionary<string, string> spanReplacements = new Dictionary<string, string>()
-        {
-            { "<span style='font-weight:bold'>", " **" },
-            { "<span style='font-weight:bold;text-decoration:underline'>", " **" }
-        };
+        private const string MathMLStart = "<!--[if mathML]>";
+        private const string MathMLEnd = "<![endif]-->";
+        private readonly OneNoteApplication oneNoteApp;
+        private readonly MDGeneratorOptions options;
         #endregion
 
         #region Constructors
-        public MDGenerator(NotebookParser parser)
+        public MDGenerator(OneNoteApplication oneNoteApplication)
+            : this(oneNoteApplication, new MDGeneratorOptions())
         {
-            this.parser = parser;
-            this.onenoteApp = this.parser.GetOneNoteApp();
+        }
 
-            var doc = parser.GetXDocument(
-                null, Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks);
-            ns = doc.Root.Name.Namespace;
+        public MDGenerator(OneNoteApplication oneNoteApplication, MDGeneratorOptions options)
+        {
+            this.oneNoteApp = oneNoteApplication;
+            this.options = options;
         }
         #endregion
 
-        #region Helpers
-        protected string NormalizeName(string source)
+        public IPageLinkResolver LinkResolver { get; set; }
+
+        #region IPageGenerator
+        public MarkdownPage PreviewMD(Page page)
         {
-            string ns = "{http://schemas.microsoft.com/office/onenote/2013/onenote}";
-            if (String.IsNullOrWhiteSpace(source))
-                return source;
-
-            if (source.StartsWith(ns))
-                source = source.Replace(ns, "");
-
-            return source;
-        }
-
-        protected string TextReplacement(string source)
-        {
-            return source.Replace("&nbsp;**", "**");
-        }
-
-        protected string ReplaceMultiline(string source)
-        {
-            return source.Replace("\n", " ");
-        }
-
-        protected string ConvertSpanToMd(string source)
-        {
-            foreach (var item in spanReplacements)
+            MDGeneratorOptions options = new MDGeneratorOptions()
             {
-                if (source.Contains(item.Key))
-                {
-                    source = source.Replace(item.Key, item.Value);
-                    source = source.Replace("** ", "**");
-                    source = source.Replace("</span>&nbsp;", item.Value.Trim());
-                    source = source.Replace("</span>", item.Value.Trim());
-                    //source = source.Replace("&nbsp;>", " ");
-                    break;
-                }
+                RootOutputDirectory = @"c:\temp\onenote2md",
+            };
+            MDWriter tempWriter = new MDWriter(options);
+            return DoGenerateMD(page, tempWriter);
+        }
+
+        public void GeneratePageMD(Page page, IWriter writer)
+        {
+            if (page == null)
+            {
+                throw new ArgumentNullException(nameof(page));
             }
 
-            return source;
-        }
+            if (page.PageSettings == null)
+            {
+                throw new ArgumentException("The page isn't populated with enough details.", nameof(page));
+            }
 
-        protected string GetAttibuteValue(XElement element, string attributeName)
-        {
-            var v = element.Attributes().Where(q => q.Name == attributeName).FirstOrDefault();
-            if (v != null)
-                return v.Value;
-            else
-                return null;
-        }
-
-        protected string GetElementValue(XElement element)
-        {
-            return element.Value;
-        }
-        #endregion
-
-        #region IGenerator
-        public MarkdownPage PreviewMD(string parentId)
-        {
-            MDWriter tempWriter = new MDWriter(@"c:\temp\onenote2md", true);
-            return DoGenerateMD(parentId, tempWriter);
-        }
-
-        public void GeneratePageMD(string parentId, IWriter writer)
-        {
-            var md = DoGenerateMD(parentId, writer);
+            var md = DoGenerateMD(page, writer);
             writer.WritePage(md);
         }
 
-        public void GenerateSectionMD(string sectionName, IWriter writer)
+        protected MarkdownPage DoGenerateMD(Page page, IWriter writer)
         {
-            var sectionId = parser.GetObjectId(
-                Microsoft.Office.Interop.OneNote.HierarchyScope.hsSections, sectionName);
-
-            GenerateSectionMD(sectionId, sectionName, writer);
-        }
-
-        public void GenerateSectionMD(string sectionId, string sectionName, IWriter writer)
-        {
-            if (!String.IsNullOrEmpty(sectionId))
-            {
-                var pageIds = parser.GetChildObjectIds(
-                    sectionId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
-                    ObjectType.Page);
-
-                try
-                {
-                    writer.PushDirectory(sectionName);
-
-                    foreach (var pageId in pageIds)
-                    {
-                        GeneratePageMD(pageId, writer);
-                    }
-                }
-                finally
-                {
-                    writer.PopDirectory();
-                }
-            }
-        }
-
-        public void GenerateSectionGroupMD(string sectionGroupId, string sectionGroupName, IWriter writer)
-        {
-            if (!String.IsNullOrEmpty(sectionGroupId))
-            {
-                var subSectionGroups = parser.GetChildObjectMap(
-                    sectionGroupId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
-                    ObjectType.SectionGroup);
-
-                try
-                {
-                    writer.PushDirectory(sectionGroupName);
-
-                    foreach (var item in subSectionGroups)
-                    {
-                        GenerateSectionGroupMD(item.Key, item.Value, writer);
-                    }
-
-                    var subSection = parser.GetChildObjectMap(
-                        sectionGroupId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
-                        ObjectType.Section);
-
-                    foreach (var section in subSection)
-                    {
-                        GenerateSectionMD(section.Key, section.Value, writer);
-                    }
-                }
-                finally
-                {
-                    writer.PopDirectory();
-                }
-            }
-        }
-
-
-        public void GenerateNotebookMD(string notebookName, IWriter writer)
-        {
-            var notebookId = parser.GetObjectId(
-                Microsoft.Office.Interop.OneNote.HierarchyScope.hsNotebooks, notebookName);
-
-            if (!String.IsNullOrEmpty(notebookId))
-            {
-                var subSectionGroups = parser.GetChildObjectMap(
-                    notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
-                    ObjectType.SectionGroup);
-
-                foreach (var item in subSectionGroups)
-                {
-                    GenerateSectionGroupMD(item.Key, item.Value, writer);
-                }
-
-                var subSection = parser.GetChildObjectMap(
-                    notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren,
-                    ObjectType.Section);
-
-                foreach (var section in subSection)
-                {
-                    GenerateSectionMD(section.Key, section.Value, writer);
-                }
-            }
-        }
-
-        protected MarkdownPage DoGenerateMD(string parentId, IWriter writer)
-        {
-            MarkdownPage markdownPage = new MarkdownPage();
-
-            var scope = Microsoft.Office.Interop.OneNote.HierarchyScope.hsChildren;
-            var doc = parser.GetXDocument(parentId, scope);
-
             StringBuilder mdContent = new StringBuilder();
 
             // create context
-            var quickStyles = GetQuickStyleDef(doc);
-            var tags = GetTagDef(doc);
-            var context = new MarkdownGeneratorContext(writer, parentId, quickStyles, tags);
-            var pageTitle = GetPageTitle(doc);
-            context.SetPageTitle(pageTitle);
-
-            var titleElement = GetTitleElement(doc);
-            GenerateChildObjectMD(titleElement, context, 0, mdContent);
-
-
-            var childenContent = DoGenerateMDRoots("OEChildren", doc, context);
-            if (String.IsNullOrWhiteSpace(childenContent))
+            var context = new MarkdownGeneratorContext(writer, page)
             {
-                var directImageContent = DoGenerateMDRoots("Image", doc, context);
-                if (!String.IsNullOrWhiteSpace(directImageContent))
-                    mdContent.Append(directImageContent);
-            }
-            else
+                PageTitle = GetPageTitle(page)
+            };
+
+            GeneratePageTitle(context, mdContent);
+
+            if (page.Items != null && page.Items.Any())
             {
-                mdContent.Append(childenContent);
+                foreach (PageObject pageObject in page.Items)
+                {
+                    if (pageObject is Outline outline)
+                    {
+                        StringBuilder outlineMarkdown = this.DoGenerateOEChildren(outline.OEChildren, context);
+                        mdContent.Append(outlineMarkdown);
+                    }
+                    else if (pageObject is Image image)
+                    {
+                        string md = this.DoGenerateImage(image, context);
+                        mdContent.Append(md);
+                    }
+                    else if (pageObject is InsertedFile insertedFile)
+                    {
+                        string md = this.DoGenerateInsertedFile(insertedFile, context);
+                        mdContent.Append(md);
+                    }
+                    else if (pageObject is MediaFile mediaFile)
+                    {
+
+                    }
+                    else
+                    {
+                        // Unsupported objects such as FutureObject, InkDrawing.
+                    }
+                }
             }
 
-
-            markdownPage.Content = mdContent.ToString();
-            markdownPage.Title = context.GetPageTitle();
-            markdownPage.Filename = context.GetPageFullPath();
-
+            MarkdownPage markdownPage = new MarkdownPage
+            {
+                Content = mdContent.ToString(),
+                Title = context.PageTitle,
+                Filename = context.Writer.GetPageFullPath(page),
+            };
             return markdownPage;
         }
 
-        protected string DoGenerateMDRoots(string rootNodeName, XDocument doc, MarkdownGeneratorContext context)
+        protected StringBuilder DoGenerateOEChildren(OEChildren[] oeChildren, MarkdownGeneratorContext context)
         {
-            var result = new StringBuilder();
-
-            var children = doc.Descendants(ns + rootNodeName).FirstOrDefault();
-            if (children != null && children.HasElements)
+            StringBuilder markdown = new StringBuilder();
+            if (oeChildren == null || !oeChildren.Any())
             {
-                var rootElements = children
-                    .Elements()
-                    .ToList();
-                foreach (var rootElement in rootElements)
+                return markdown;
+            }
+
+            foreach (OEChildren child in oeChildren)
+            {
+                if (child.Items == null)
                 {
-                    int level = 0;
-                    GenerateChildObjectMD(rootElement, context, level, result);
+                    continue;
                 }
 
-                if (context.HasPairedContent())
+                foreach (object item in child.Items)
                 {
-                    result.Append(context.Get().Content);
-                    context.Reset();
+                    if (item is OE element)
+                    {
+                        // An OE object is considered to be a Markdown paragraph.
+                        StringBuilder paragraphMarkdown = new StringBuilder();
+
+                        // Style
+                        var quickStyleDef = context.GetQuickStyleDef(element.quickStyleIndex);
+                        string paragraphStyle = quickStyleDef?.name ?? "p";
+                        int headingLevel = 0;
+                        switch (paragraphStyle)
+                        {
+                            case "h1":
+                            case "h2":
+                            case "h3":
+                            case "h4":
+                            case "h5":
+                            case "h6":
+                                headingLevel = paragraphStyle[1] - '0';
+                                break;
+                            case "PageTitle":
+                                headingLevel = 1;
+                                break;
+                        }
+
+                        // Tag(s)
+                        if (element.Tag != null && element.Tag.Any())
+                        {
+                            foreach (Tag tag in element.Tag)
+                            {
+                                TagDef tagDef = context.GetTagDef(tag.index);
+                                string tagMD = tag.GetMD(tagDef);
+                                paragraphMarkdown.Append(tagMD);
+                            }
+                        }
+
+                        // List
+                        if (element.List?.Item != null)
+                        {
+                            if (element.List.Item is Bullet)
+                            {
+                                paragraphMarkdown.Append("* ");
+                            }
+                            else if (element.List.Item is Number number)
+                            {
+                                paragraphMarkdown.Append(number.text + " ");
+                            }
+                        }
+
+                        // Text
+                        if (element.Items != null)
+                        {
+                            foreach (object o in element.Items)
+                            {
+                                if (o is TextRange textRange)
+                                {
+                                    string md;
+                                    if (paragraphStyle == "code")
+                                    {
+                                        md = MDGenerator.ToPlainText(textRange);
+                                    }
+                                    else
+                                    {
+                                        md = MDGenerator.ToMarkdown(textRange, this.LinkResolver, context);
+                                    }
+
+                                    paragraphMarkdown.Append(md);
+                                }
+                                else if (o is Image image)
+                                {
+                                    string md = this.DoGenerateImage(image, context);
+                                    paragraphMarkdown.Append(md);
+                                }
+                                else if (o is InsertedFile insertedFile)
+                                {
+                                    string md = this.DoGenerateInsertedFile(insertedFile, context);
+                                    paragraphMarkdown.Append(md);
+                                }
+                                else if (o is Table table)
+                                {
+                                    string md = this.DoGenerateTable(table, context);
+                                    paragraphMarkdown.Append(md);
+                                }
+                                else if (o is MediaFile mediaFile)
+                                {
+
+                                }
+                                else
+                                {
+                                    // Unsupported objects such as FutureObject, InkDrawing, InkParagraph, InkWord.
+                                }
+                            }
+
+                            if (paragraphMarkdown.Length > 0)
+                            {
+                                paragraphMarkdown.AppendLine();
+                            }
+                        }
+
+                        // More indentented children
+                        if (element.OEChildren != null && element.OEChildren.Any())
+                        {
+                            // Recursion
+                            context.IndentLevel++;
+                            StringBuilder childParagraph = this.DoGenerateOEChildren(element.OEChildren, context);
+                            context.IndentLevel--;
+                            paragraphMarkdown.Append(childParagraph);
+                        }
+
+                        // Determine the indent prefix
+                        string indentPrefix = string.Empty;
+                        if (context.IndentLevel > 0)
+                        {
+                            indentPrefix = new string('>', context.IndentLevel) + " ";
+                        }
+
+                        if (context.InCodeBlock && paragraphStyle != "code")
+                        {
+                            // Finish the previous code block
+                            markdown.AppendLine(context.CodeBlockEnd);
+                            context.CodeBlockEnd = null;
+                            context.InCodeBlock = false;
+                        }
+
+                        // Append the paragraph to the final document
+                        if (headingLevel > 0)
+                        {
+                            if (paragraphMarkdown.Length > 0)
+                            {
+                                string headingPrefix = new string('#', headingLevel) + " ";
+                                markdown.Append(headingPrefix);
+                                markdown.AppendLine(paragraphMarkdown.ToString());
+                            }
+                        }
+                        else if (paragraphStyle == "code")
+                        {
+                            markdown.Append(indentPrefix);
+                            if (!context.InCodeBlock)
+                            {
+                                // Start a code block. Note the block end should match.
+                                markdown.AppendLine("```");
+                                context.InCodeBlock = true;
+                                context.CodeBlockEnd = indentPrefix + "```";
+                            }
+
+                            markdown.Append(paragraphMarkdown.ToString());
+                        }
+                        else // paragraphStyle in ["blockquote", "cite", "p"]
+                        {
+                            markdown.Append(indentPrefix);
+                            markdown.Append(paragraphMarkdown.ToString());
+                            if (element.List?.Item == null && context.IndentLevel == 0)
+                            {
+                                markdown.AppendLine();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Unsupported items such as HtmlContent.
+                    }
+                }
+
+                if (context.InCodeBlock)
+                {
+                    markdown.AppendLine(context.CodeBlockEnd);
+                    context.CodeBlockEnd = null;
+                    context.InCodeBlock = false;
                 }
             }
 
-            return result.ToString();
+            return markdown;
+        }
+
+        protected string DoGenerateImage(Image image, MarkdownGeneratorContext context)
+        {
+            if (image == null)
+            {
+                throw new ArgumentNullException(nameof(image));
+            }
+
+            byte[] bytes = null;
+            string preferredFileName = Path.GetFileNameWithoutExtension(context.Page.MarkdownFileName) + "." + image.format;
+            string link = string.Empty;
+            if (image.Item is CallbackID callbackID)
+            {
+                string stringValue = oneNoteApp.GetBinaryPageContent(context.Page.ID, callbackID.callbackID);
+                bytes = Convert.FromBase64String(stringValue);
+            }
+            else if (image.Item is byte[])
+            {
+                bytes = image.Item as byte[];
+            }
+            else if (image.Item is FilePath filePath)
+            {
+                link = context.Writer.CopyAttachment(context.Page, filePath.path);
+            }
+            else
+            {
+                // Should never come here
+            }
+
+            if (bytes != null)
+            {
+                link = context.Writer.WriteAttachment(context.Page, preferredFileName, bytes);
+            }
+
+            var imageMarkdown = $"![{preferredFileName}]({MDGenerator.EncodeMarkdownLink(link)})";
+            return imageMarkdown;
+        }
+
+        protected string DoGenerateInsertedFile(InsertedFile file, MarkdownGeneratorContext context)
+        {
+            string oldPathAndName = file.pathCache;
+            if (!File.Exists(oldPathAndName))
+            {
+                oldPathAndName = file.pathSource;
+            }
+
+            string link = context.Writer.CopyAttachment(context.Page, oldPathAndName, file.preferredName);
+            string markdown = $"[{file.preferredName}]({MDGenerator.EncodeMarkdownLink(link)})";
+            return markdown;
+        }
+
+        protected string DoGenerateTable(Table table, MarkdownGeneratorContext context)
+        {
+            StringBuilder markdown = new StringBuilder();
+            if (table == null || table.Row == null || table.Row.FirstOrDefault()?.Cell == null)
+            {
+                return markdown.ToString();
+            }
+
+            for (int r = 0; r < table.Row.Length; r++)
+            {
+                foreach (Cell cell in table.Row[r].Cell)
+                {
+                    markdown.Append("| ");
+                    markdown.Append(this.DoGenerateOEChildren(cell.OEChildren, context).ToString().Trim());
+                    markdown.Append(" ");
+                }
+
+                markdown.AppendLine("|");
+
+                if (r == 0)
+                {
+                    for (int i = 0; i < table.Columns.Length; i++)
+                    {
+                        markdown.Append("| - ");
+                    }
+
+                    markdown.AppendLine("|");
+                }
+            }
+
+            return markdown.ToString();
         }
         #endregion
 
         #region Generation helpers
-        protected Dictionary<string, QuickStyleDef> GetQuickStyleDef(XDocument doc)
+        protected string GetPageTitle(Page page)
         {
-            var nodeName = "QuickStyleDef";
-
-            var result = new Dictionary<string, QuickStyleDef>();
-            var quickStyleDefs = doc.Descendants(ns + nodeName);
-            if (quickStyleDefs != null)
+            var result = string.Empty;
+            if (page?.Title?.OE?.Any() == true)
             {
-                foreach (var item in quickStyleDefs)
+                // Find the first TextRange(<one:T>) child element.
+                if (page.Title.OE[0].Items?.FirstOrDefault(o => o is TextRange) is TextRange textRange)
                 {
-                    QuickStyleDef def = new QuickStyleDef();
-                    def.Index = GetAttibuteValue(item, "index");
-                    def.Name = GetAttibuteValue(item, "name");
-                    result.Add(def.Index, def);
-                }
-
-            }
-
-            return result;
-        }
-
-        protected Dictionary<string, TagDef> GetTagDef(XDocument doc)
-        {
-            var nodeName = "TagDef";
-
-            var result = new Dictionary<string, TagDef>();
-            var tagDefs = doc.Descendants(ns + nodeName);
-            if (tagDefs != null)
-            {
-                foreach (var item in tagDefs)
-                {
-                    var def = new TagDef();
-                    def.Index = GetAttibuteValue(item, "index");
-                    def.Name = GetAttibuteValue(item, "name");
-                    def.Symbol = GetAttibuteValue(item, "symbol");
-                    def.Type = GetAttibuteValue(item, "type");
-                    result.Add(def.Index, def);
+                    result = ToPlainText(textRange);
                 }
             }
 
+            if (string.IsNullOrEmpty(result))
+            {
+                // If a page is not given a title, the page.name is auto-generated such as "untitled page".
+                result = page.name;
+            }
+            
             return result;
         }
 
-        protected string GetPageTitle(XDocument doc)
+        protected void GeneratePageTitle(MarkdownGeneratorContext context, StringBuilder results)
         {
-            var nodeName = "Title";
+            results.AppendLine("# " + MDGenerator.EscapeMarkdown(context.PageTitle));
+        }
 
-            var result = "";
-            var element = doc.Descendants(ns + nodeName).FirstOrDefault();
-            if (element != null)
+        private static string ToPlainText(TextRange textRange)
+        {
+            if (textRange == null || string.IsNullOrEmpty(textRange.Value))
             {
-                var title = element.Descendants(ns + "OE").FirstOrDefault();
-                if (title != null)
-                    return title.Value.ToString();
+                return string.Empty;
             }
 
+            if (textRange.Value.StartsWith(MDGenerator.MathMLStart))
+            {
+                return textRange.Value;
+            }
+
+            // The textRange.Value is a multi-line HTML segment and is HTML encoded.
+            // *** Example value: ***
+            // <span
+            // style='font-family:"Microsoft YaHei"' lang=zh-CN>格式测试</span><span
+            // style='font-family:Calibri' lang=en-US>&lt;</span><span style='font-family:
+            // "Microsoft YaHei"' lang=en-US>FormatTest&gt;</span>
+            // *** End of example value ***
+            string result = Regex.Replace(textRange.Value, @"</?\w+[^>]*?>", string.Empty);
+            result = HttpUtility.HtmlDecode(result);
             return result;
         }
 
-        protected XElement GetTitleElement(XDocument doc)
+        /// <summary>
+        /// Convert the <one:T> tag and its value to Markdown source with format.
+        /// </summary>
+        /// <param name="textRange"></param>
+        /// <returns></returns>
+        private static string ToMarkdown(TextRange textRange, IPageLinkResolver linkResolver, MarkdownGeneratorContext context)
         {
-            var nodeName = "Title";
-
-            var element = doc.Descendants(ns + nodeName).FirstOrDefault();
-
-            return element;
-        }
-
-        protected void GenerateChildObjectMD(
-            XElement node, MarkdownGeneratorContext context, long level, StringBuilder results)
-        {
-            if (node != null)
+            if (textRange == null || string.IsNullOrEmpty(textRange.Value))
             {
-                string name = NormalizeName(node.Name.ToString());
-                bool stdTraversal = true;
+                return string.Empty;
+            }
 
-
-                StringBuilder content = new StringBuilder();
-                switch (name)
+            StringBuilder markdown = new StringBuilder(textRange.Value.Length);
+            if (textRange.Value.StartsWith(MDGenerator.MathMLStart))
+            {
+                // This is a MathML formular
+                markdown.Append(textRange.Value);
+            }
+            else
+            {
+                Stack<HtmlToken> openTags = new Stack<HtmlToken>();
+                int i = 0;
+                do
                 {
-                    case "OE":
-                        {
-                            if (context.HasPairedContent())
-                            {
-                                content.Append(context.Get().Content);
-                                context.Reset();
-                            }
-
-                            if (context.TableInfo.IsOnTable())
-                            {
-
-                            }
-                            else
-                            {
-                                var quickStyleIndex = GetAttibuteValue(node, "quickStyleIndex");
-                                if (!String.IsNullOrEmpty(quickStyleIndex))
-                                {
-                                    var quickStyleDef = context.GetQuickStyleDef(quickStyleIndex);
-                                    if (quickStyleDef != null)
-                                    {
-                                        var mdContent = quickStyleDef.GetMD();
-                                        if (!mdContent.WillAppendLine())
-                                            content.AppendLine();
-                                        context.Set(mdContent);
-                                        content.Append(mdContent.Content);
-                                    }
-                                }
-                            }
-                        }
-                        break;
-
-                    case "T":
-                        {
-                            string v = ReplaceMultiline(node.Value);
-
-                            v = ConvertSpanToMd(v);
-                            v = TextReplacement(v);
-                            content.Append(v);
-                        }
-                        break;
-
-                    case "Bullet":
-                        {
-                            content.Append("- ");
-                        }
-                        break;
-
-                    case "Number":
-                        {
-                            content.Append("1. ");
-                        }
-                        break;
-
-                    case "Tag":
-                        {
-                            var tagIndex = GetAttibuteValue(node, "index");
-                            var tagDef = context.GetTagDef(tagIndex);
-
-                            if (tagDef != null)
-                            {
-                                if (tagDef.Name.Equals("To Do", StringComparison.InvariantCultureIgnoreCase))
-                                {
-                                    var completed = GetAttibuteValue(node, "completed");
-                                    if (completed == "true")
-                                        content.Append("- [x] ");
-                                    else
-                                        content.Append("- [ ] ");
-                                }
-                                else
-                                {
-                                    var tagMdContent = tagDef.GetMD();
-                                    content.Append("- ");
-                                    content.Append(tagMdContent.Content);
-                                }
-                            }
-                        }
-                        break;
-
-
-
-                    case "Table":
-                        {
-                            if (context.HasPairedContent())
-                            {
-                                content.Append(context.Get().Content);
-                                context.Reset();
-                            }
-
-                            stdTraversal = false;
-                            context.TableInfo.SetOnTable();
-                            results.Append(content);
-
-                            if (node.HasElements)
-                            {
-                                var subs = node.Elements().ToList();
-                                foreach (var item in subs)
-                                {
-                                    GenerateChildObjectMD(item, context, ++level, results);
-                                }
-                            }
-
-                            results.AppendLine();
-                            context.TableInfo.Reset();
-                        }
-                        break;
-
-                    case "Column":
-                        {
-                            context.TableInfo.AppendTableColumn();
-                        }
-                        break;
-
-                    case "Row":
-                        {
-                            if (context.TableInfo.IsOnTable())
-                            {
-                                if (context.TableInfo.OnHeaderRow())
-                                {
-                                    content.AppendLine();
-                                    var columns = context.TableInfo.GetTableColumnCount();
-                                    for (int i = 0; i < columns; i++)
-                                    {
-                                        content.Append("| - ");
-                                    }
-                                    content.Append("|");
-                                }
-
-                                stdTraversal = false;
-
-                                content.AppendLine();
-                                context.TableInfo.AppendRow();
-
-                                results.Append(content);
-
-                                if (node.HasElements)
-                                {
-                                    var subs = node.Elements().ToList();
-                                    foreach (var item in subs)
-                                    {
-                                        GenerateChildObjectMD(item, context, ++level, results);
-                                    }
-                                }
-
-                                results.Append(" |");
-                            }
-                            else
-                            {
-                                // how we get here?
-                            }
-
-                        }
-                        break;
-
-                    case "Cell":
-                        {
-                            if (context.TableInfo.IsOnTable())
-                            {
-                                content.Append(" | ");
-                                //context.Set(new MarkdownContent("|", true));
-                            }
-                            else
-                            {
-                                // how we get here?
-                            }
-
-                        }
-                        break;
-
-                    case "Image":
-                        {
-                            var format = GetAttibuteValue(node, "format");
-                            if (String.IsNullOrEmpty(format))
-                                format = "png";
-                            context.ImageDef.SetWithinImage(format);
-                        }
-                        break;
-
-                    case "Size":
-                        {
-                            var width = GetAttibuteValue(node, "width");
-                            var height = GetAttibuteValue(node, "height");
-
-
-                            var w = Convert.ToDecimal(width);
-                            var h = Convert.ToDecimal(height);
-
-                            context.ImageDef.SetDimensions(w, h);
-
-                        }
-                        break;
-
-                    case "CallbackID":
-                        {
-                            var id = GetAttibuteValue(node, "callbackID");
-
-                            string stringValue;
-                            onenoteApp.GetBinaryPageContent(context.ParentId, id, out stringValue);
-
-                            if (!context.ImageDef.IsWithinImage())
-                                context.ImageDef.SetWithinImage("png");
-
-                            var fullPath = context.GetPageImageFullPath();
-                            var bytes = Convert.FromBase64String(stringValue);
-                            context.Writer.WritePageImage(fullPath, bytes);
-
-                            var imageFilename = context.GetPageImageFilename();
-                            var contentRelativePath = $"file://{imageFilename}";
-                            var image = $"![{imageFilename}]({contentRelativePath})";
-
-                            content.Append(image);
-                            context.ImageDef.Reset();
-
-
-                        }
-                        break;
-
-                    case "OCRData":
-                        {
-
-                        }
-                        break;
-
-                    case "InsertedFile":
-                        {
-                            var oldPathAndName = GetAttibuteValue(node, "pathCache");
-                            var newName = GetAttibuteValue(node, "preferredName");
-                            var fullPath = context.GetInsertedFilePath(newName);
-
-
-                          
-                            File.Copy(oldPathAndName, fullPath);
-
-                            var altText = newName;
-                            var contentFullPath = $"file://{fullPath}";
-                            contentFullPath = contentFullPath.Replace(@"\", @"/");
-                            contentFullPath = HttpUtility.UrlPathEncode(contentFullPath);
-
-                            var insertedFile = $"[{altText}]({contentFullPath})";
-
-                            content.Append(insertedFile);
-                        }
-                        break;
-
-
-
-                    default:
-                        break;
-                }
-
-                if (stdTraversal)
-                {
-                    results.Append(content);
-
-                    if (node.HasElements)
+                    HtmlToken token = NextToken(textRange.Value, i);
+                    if (token == null)
                     {
-                        var subs = node.Elements().ToList();
-                        foreach (var item in subs)
+                        break;
+                    }
+
+                    i += token.ParsedLength;
+                    if (token.IsBeginTag && token.IsEndTag)
+                    {
+                        // Single tag
+                        if (token.TagName == "br")
                         {
-                            GenerateChildObjectMD(item, context, ++level, results);
+                            // Do nothing here. A new line will be appended at the end of the 
                         }
                     }
+                    else if (token.IsBeginTag)
+                    {
+                        openTags.Push(token);
+                        if (token.TagName == "a")
+                        {
+                            markdown.Append('[');
+                        }
+
+                        if (token.Format.Ignore)
+                        {
+                            continue;
+                        }
+
+                        // Bold and italic both uses '*" and Markdown doesn't define the ambiguity
+                        // especially when nested. We do not render both formats for a single tag.
+                        // However the generated Markdown might be incorrect if there're nested tags
+                        // with bold and italic formats.
+                        if (token.Format.Bold)
+                        {
+                            markdown.Append("**");
+                        }
+                        else if (token.Format.Italic)
+                        {
+                            markdown.Append("*");
+                        }
+
+                        if (token.Format.Highlighted)
+                        {
+                            markdown.Append("==");
+                        }
+
+                        if (token.Format.LineThrough)
+                        {
+                            markdown.Append("~~");
+                        }
+
+                        if (token.Format.Subscript)
+                        {
+                            markdown.Append("<sub>");
+                        }
+
+                        if (token.Format.Superscript)
+                        {
+                            markdown.Append("<sup>");
+                        }
+
+                        if (token.Format.Underlined)
+                        {
+                            markdown.Append("<u>");
+                        }
+                    }
+                    else if (token.IsEndTag)
+                    {
+                        if (openTags.Count == 0)
+                        {
+                            throw new ArgumentException(String.Format("Cannot find the matching tag for </{0}> in {1}.", token.TagName, textRange.Value));
+                        }
+
+                        HtmlToken beginToken = openTags.Pop();
+                        TagFormat format = beginToken.Format;
+                        if (format.TagName != token.TagName)
+                        {
+                            throw new ArgumentException(String.Format("The begin tag <{0}> mismatches for </{1}> in {2}.", format.TagName, token.TagName, textRange.Value));
+                        }
+
+                        // The end tag order should be reversed as the begin tag order.
+                        if (format.Underlined)
+                        {
+                            markdown.Append("</u>");
+                        }
+
+                        if (format.Superscript)
+                        {
+                            markdown.Append("</sup>");
+                        }
+
+                        if (format.Subscript)
+                        {
+                            markdown.Append("</sub>");
+                        }
+
+                        if (format.LineThrough)
+                        {
+                            markdown.Append("~~");
+                        }
+
+                        if (format.Highlighted)
+                        {
+                            markdown.Append("==");
+                        }
+
+                        if (format.Bold)
+                        {
+                            markdown.Append("**");
+                        }
+                        else if (format.Italic)
+                        {
+                            markdown.Append("*");
+                        }
+
+                        if (beginToken.TagName == "a")
+                        {
+                            string link = beginToken.href;
+                            if (linkResolver != null)
+                            {
+                                link = linkResolver.ResolvePageLink(link, context.Page);
+                                link = MDGenerator.EncodeMarkdownLink(link);
+                            }
+
+                            markdown.Append("](" + link + ")");
+                        }
+                    }
+                    else if (token.IsText)
+                    {
+                        if (token.TagName == "mml")
+                        {
+                            markdown.Append('\'');
+                            markdown.Append(token.Text);
+                            markdown.Append('\'');
+                        }
+                        else
+                        {
+                            string plainText = HttpUtility.HtmlDecode(token.Text);
+                            string mdSource = MDGenerator.EscapeMarkdown(plainText);
+                            markdown.Append(mdSource);
+                        }
+                    }
+                } while (i < textRange.Value.Length);
+            }
+
+            return markdown.ToString();
+        }
+
+        /// <summary>
+        /// Escape the special characters in Markdown.
+        /// The <see cref="clearText"/> should be what you would like to see in a rendered Markdown document.
+        /// </summary>
+        /// <param name="clearText"></param>
+        /// <returns></returns>
+        private static string EscapeMarkdown(string clearText)
+        {
+            if (string.IsNullOrEmpty(clearText))
+            {
+                return string.Empty;
+            }
+
+            HashSet<char> specialChars = new HashSet<char>(new char[] { '\\', '`', '*', '_', '{', '}', '[', ']', '#', '+', '!', '|', '<', '&' });
+            StringBuilder markdownSource = new StringBuilder(clearText.Length * 2);
+            for (int i = 0; i < clearText.Length; i++)
+            {
+                char c = clearText[i];
+                if (specialChars.Contains(c))
+                {
+                    markdownSource.Append(@"\" + c);
+                }
+                else if (c == '=')
+                {
+                    // Only "==" (markdown highlight) needs to be escaped
+                    if (i + 1 < clearText.Length && clearText[i + 1] == '=')
+                    {
+                        markdownSource.Append(@"\=");
+                    }
+                }
+                else
+                {
+                    markdownSource.Append(c);
                 }
             }
+
+            return markdownSource.ToString();
+        }
+
+        private static HtmlToken NextToken(string value, int startIndex)
+        {
+            if (string.IsNullOrEmpty(value) || startIndex >= value.Length)
+            {
+                return null;
+            }
+
+            HtmlToken token = new HtmlToken();
+            if (value.Length >= (startIndex + MDGenerator.MathMLStart.Length)
+                && value.Substring(startIndex, MDGenerator.MathMLStart.Length) == MDGenerator.MathMLStart)
+            {
+                int endIndex = value.IndexOf(MDGenerator.MathMLEnd, startIndex);
+                if (endIndex < 0)
+                {
+                    throw new ArgumentException($"Can't find the end of MathML: {value}@{startIndex}");
+                }
+
+                token.TagName = "mml";
+                token.IsText = true;
+                token.Text = value.Substring(startIndex, endIndex - startIndex + MDGenerator.MathMLEnd.Length);
+                token.ParsedLength = token.Text.Length;
+            }
+            else if (value.Length >= (startIndex + 2) && value.Substring(startIndex, 2) == "</")
+            {
+                token.IsEndTag = true;
+            }
+            else if (value[startIndex] == '<')
+            {
+                token.IsBeginTag = true;
+            }
+            else
+            {
+                token.IsText = true;
+                int nextTagIndex = value.IndexOf('<', startIndex);
+                if (nextTagIndex < 0)
+                {
+                    token.Text = value.Substring(startIndex);
+                }
+                else
+                {
+                    token.Text = value.Substring(startIndex, nextTagIndex - startIndex);
+                }
+
+                token.ParsedLength = token.Text.Length;
+            }
+
+            if (token.IsBeginTag || token.IsEndTag)
+            {
+                Regex tagRegex = new Regex(@"\G</?(?<tagName>\w+)(?<attributes>[^>]*?)>", RegexOptions.Compiled);
+                Match m = tagRegex.Match(value, startIndex);
+                if (m.Success)
+                {
+                    token.TagName = m.Groups["tagName"].Value;
+                    token.ParsedLength = m.Length;
+                    token.Format = new TagFormat()
+                    {
+                        TagName = token.TagName,
+                        Ignore = true,
+                    };
+
+                    string attributes = m.Groups["attributes"].Value;
+                    if (string.Compare(token.TagName, "br", StringComparison.OrdinalIgnoreCase) == 0 || m.Value.EndsWith("/>"))
+                    {
+                        token.IsEndTag = true;
+                        token.TagName = "br";
+                    }
+                    else if (string.Compare(token.TagName, "a", StringComparison.OrdinalIgnoreCase) == 0)
+                    {
+                        token.TagName = "a";
+                        Dictionary<string, string> attrDict = MDGenerator.ParseHtmlAttributes(attributes);
+                        if (attrDict.ContainsKey("href"))
+                        {
+                            token.href = attrDict["href"];
+                        }
+                    }
+
+                    // Parse formats                    
+                    if (attributes.Contains("text-decoration:underline"))
+                    {
+                        token.Format.Underlined = true;
+                        token.Format.Ignore = false;
+                    }
+
+                    if (attributes.Contains("font-weight:bold"))
+                    {
+                        token.Format.Bold = true;
+                        token.Format.Ignore = false;
+                    }
+
+                    if (attributes.Contains("font-style:italic"))
+                    {
+                        token.Format.Italic = true;
+                        token.Format.Ignore = false;
+                    }
+
+                    if (attributes.Contains("background:yellow"))
+                    {
+                        token.Format.Highlighted = true;
+                        token.Format.Ignore = false;
+                    }
+
+                    if (attributes.Contains("text-decoration:line-through"))
+                    {
+                        token.Format.LineThrough = true;
+                        token.Format.Ignore = false;
+                    }
+
+                    if (attributes.Contains("vertical-align:sub"))
+                    {
+                        token.Format.Subscript = true;
+                        token.Format.Ignore = false;
+                    }
+
+                    if (attributes.Contains("vertical-align:super"))
+                    {
+                        token.Format.Superscript = true;
+                        token.Format.Ignore = false;
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException($"The tag regular expression missed the match unexpectedly: {value}@{startIndex}");
+                }
+            }
+
+            return token;
+        }
+
+        private static Dictionary<string, string> ParseHtmlAttributes(string attributes)
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            if (string.IsNullOrEmpty(attributes))
+            {
+                return result;
+            }
+
+            foreach (string attribute in Regex.Split(attributes, @"\s"))
+            {
+                if (string.IsNullOrWhiteSpace(attribute))
+                {
+                    continue;
+                }
+
+                int valueIndex = attribute.IndexOf('=');
+                if (valueIndex < 0)
+                {
+                    result[attribute] = attribute;
+                }
+                else
+                {
+                    string name = attribute.Substring(0, valueIndex);
+                    string value = attribute.Substring(valueIndex + 1);
+                    if (value.StartsWith("'"))
+                    {
+                        value = value.Trim('\'');
+                    }
+                    else if (value.StartsWith("\""))
+                    {
+                        value = value.Trim('"');
+                    }
+
+                    value = HttpUtility.HtmlDecode(value);
+                    result[name.ToLowerInvariant()] = value;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Markdown has some limit with link path. We could simply UrlEncode the full path, but it
+        /// made the unicode characters unreadable. For example "测试" becomes "%e6%b5%8b%e8%af%95".
+        /// So a simpler encoder is used here.
+        /// </summary>
+        /// <param name="linkPath"></param>
+        /// <returns></returns>
+        private static string EncodeMarkdownLink(string linkPath)
+        {
+            if (string.IsNullOrEmpty(linkPath))
+            {
+                return string.Empty;
+            }
+
+            return linkPath.Replace(" ", "%20").Replace('\\', '/');
+        }
+
+        private class HtmlToken
+        {
+            public bool IsBeginTag { get; set; }
+
+            public bool IsEndTag { get; set; }
+
+            public bool IsText { get; set; }
+
+            public int ParsedLength { get; set; }
+
+            public string TagName { get; set; }
+
+            public string Text { get; set; }
+
+            public string href { get; set; }
+
+            public TagFormat Format { get; set; }
+        }
+
+        /// <summary>
+        /// An HTML tag with formats. In OneNote I see <span> only, but this can be any tag
+        /// like <span>, <font>. We only care about formats with markdown equivalents.
+        /// Unsupported formats are ignored.
+        /// </summary>
+        private class TagFormat
+        {
+            public string TagName { get; set; }
+
+            public bool Bold { get; set; }
+
+            public bool Italic { get; set; }
+
+            public bool Highlighted { get; set; }
+
+            public bool LineThrough { get; set; }
+
+            public bool Subscript { get; set; }
+
+            public bool Superscript { get; set; }
+
+            public bool Underlined { get; set; }
+
+            /// <summary>
+            /// Indicates this is an empty tag or all formats are ignored.
+            /// </summary>
+            public bool Ignore { get; set; }
         }
         #endregion
     }
